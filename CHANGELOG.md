@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.3](https://github.com/sverrehu/k3a-embedded/compare/v0.0.2...v0.0.3) (2023-10-06)
+
+
+### Bug Fixes
+
+* Use RELEASE_TOKEN ([#12](https://github.com/sverrehu/k3a-embedded/issues/12)) ([7a9d364](https://github.com/sverrehu/k3a-embedded/commit/7a9d36496cf4d137e14288772b1c48340c2af0c6))
+
 ## [0.0.2](https://github.com/sverrehu/k3a-embedded/compare/v0.0.1...v0.0.2) (2023-10-06)
 
 

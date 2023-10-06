@@ -17,3 +17,4 @@ jobs:
         with:
           release-type: maven
           bump-minor-pre-major: true
+          token: ${{ secrets.RELEASE_TOKEN }}

@@ -21,6 +21,6 @@ jobs:
           distribution: "temurin"
           cache: maven
       - name: Publish package
-        run: mvn --batch-mode deploy
+        run: ./bin/deploy-multi.sh
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

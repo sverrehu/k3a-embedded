@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.0](https://github.com/sverrehu/k3a-embedded/compare/v0.0.3...v0.1.0) (2023-10-06)
+
+
+### Features
+
+* build for multiple Kafka versions ([#15](https://github.com/sverrehu/k3a-embedded/issues/15)) ([4224477](https://github.com/sverrehu/k3a-embedded/commit/42244778d2e2f2d74884275c0d740a8c36a39015))
+
 ## [0.0.3](https://github.com/sverrehu/k3a-embedded/compare/v0.0.2...v0.0.3) (2023-10-06)
 
 

@@ -6,10 +6,9 @@ then
     exit 1
 fi
 
-KAFKA_VERSIONS="3.6.0 3.5.1"
+KAFKA_VERSIONS="3.5.1 3.6.0"
 CURRENT_VERSION="$(grep '<version>' pom.xml | head -1 | sed -re 's/[[:space:]]*<version>(.*)<\/version>[[:space:]]*/\1/')"
 
-mvn --batch-mode deploy
 cp pom.xml pom.xml.old
 for KAFKA_VERSION in $KAFKA_VERSIONS
 do
@@ -22,3 +21,4 @@ do
 done
 mv pom.xml.old pom.xml
 rm -f pom.xml.versionsBackup
+mvn --batch-mode deploy

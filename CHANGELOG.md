@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.1](https://github.com/sverrehu/k3a-embedded/compare/v0.1.0...v0.1.1) (2023-10-06)
+
+
+### Bug Fixes
+
+* Deploy ordering ([#18](https://github.com/sverrehu/k3a-embedded/issues/18)) ([47384da](https://github.com/sverrehu/k3a-embedded/commit/47384da9559296afd6c19c850716bb2dd0466465))
+
 ## [0.1.0](https://github.com/sverrehu/k3a-embedded/compare/v0.0.3...v0.1.0) (2023-10-06)
 
 

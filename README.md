@@ -18,6 +18,27 @@ tests. No container runtime required.
 
 ## Usage
 
+To use this tool, add a dependency like the following:
+
+```xml
+    <dependency>
+        <groupId>no.shhsoft</groupId>
+        <artifactId>k3a-embedded</artifactId>
+        <version>0.2.1+${kafka.version}</version>
+        <scope>test</scope>
+    </dependency>
+```
+
+Where `${kafka.version}` is the same version you intend to use for the
+kafka-clients library. Since both the server, which uses kafka-clients
+internally, and your test code runs in the same VM, the versions must
+match.
+
+The following Kafka versions are supported at the moment:
+
+* 3.6.0
+* 3.5.1
+
 For JUnit tests, do something like this for starting, stopping, and
 getting the correct Kafka bootstrap servers (the latter will be
 `localhost` in combination with the random port):

@@ -88,7 +88,7 @@ public final class K3aEmbedded {
             throw new RuntimeException("Server already started");
         }
         logDirectory = createKafkaLogDirectory();
-        final Map<String, String> map = getConfigMap(logDirectory);
+        final Map<String, String> map = getConfigMap();
         final KafkaConfig config = new KafkaConfig(map);
         formatKafkaLogDirectory(config);
         server = new KafkaRaftServer(config, Time.SYSTEM);
@@ -118,7 +118,7 @@ public final class K3aEmbedded {
         return "localhost:" + getBrokerPort();
     }
 
-    private HashMap<String, String> getConfigMap(final Path logDir) {
+    private HashMap<String, String> getConfigMap() {
         final HashMap<String, String> map = new HashMap<>();
         map.put("node.id", String.valueOf(NODE_ID));
         map.put("process.roles", "broker, controller");
@@ -127,7 +127,7 @@ public final class K3aEmbedded {
         map.put("inter.broker.listener.name", "BROKER");
         map.put("listeners", "BROKER://:" + brokerPort + ", CONTROLLER://:" + controllerPort);
         map.put("listener.security.protocol.map", "BROKER:PLAINTEXT, CONTROLLER:PLAINTEXT");
-        map.put("log.dir", logDir.toString());
+        map.put("log.dir", logDirectory.toString());
         map.put("offsets.topic.num.partitions", "1");
         map.put("offsets.topic.replication.factor", "1");
         map.put("group.initial.rebalance.delay.ms", "0");

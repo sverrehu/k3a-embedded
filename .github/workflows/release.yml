@@ -1,5 +1,5 @@
 ---
-name: Publish package to GitHub Packages
+name: Publish package
 on:
   release:
     types:

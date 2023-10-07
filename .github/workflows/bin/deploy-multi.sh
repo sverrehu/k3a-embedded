@@ -21,4 +21,3 @@ do
 done
 mv pom.xml.old pom.xml
 rm -f pom.xml.versionsBackup
-mvn --batch-mode clean deploy

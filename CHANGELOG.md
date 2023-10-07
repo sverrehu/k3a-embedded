@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.3.0](https://github.com/sverrehu/k3a-embedded/compare/v0.2.2...v0.3.0) (2023-10-07)
+
+
+### ⚠ BREAKING CHANGES
+
+* Remove deprecated constructor. Builder only now. ([#42](https://github.com/sverrehu/k3a-embedded/issues/42))
+
+### Features
+
+* Allow specifying additional listeners ([#41](https://github.com/sverrehu/k3a-embedded/issues/41)) ([a23392d](https://github.com/sverrehu/k3a-embedded/commit/a23392dd6cc4c3a3bdf5d0d851de42f1ae2bc715))
+* Introduce Builder, deprecating the default constructor ([#38](https://github.com/sverrehu/k3a-embedded/issues/38)) ([af83daa](https://github.com/sverrehu/k3a-embedded/commit/af83daab68a5304bad3935da8c20fd40f3766ea6))
+
+
+### Bug Fixes
+
+* Remove deprecated constructor. Builder only now. ([#42](https://github.com/sverrehu/k3a-embedded/issues/42)) ([688ecef](https://github.com/sverrehu/k3a-embedded/commit/688ecef9348b6212200530e937de3eb5132dd137))
+
 ## [0.2.2](https://github.com/sverrehu/k3a-embedded/compare/v0.2.1...v0.2.2) (2023-10-07)
 
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/sverrehu/k3a-embedded/compare/v0.2.0...v0.2.1) (2023-10-07)
+
+
+### Bug Fixes
+
+* Clean to avoid uploading duplicates ([6331284](https://github.com/sverrehu/k3a-embedded/commit/63312844fd8d82463c4e4d9a0e267d68196e5fcd))
+
 ## [0.2.0](https://github.com/sverrehu/k3a-embedded/compare/v0.1.3...v0.2.0) (2023-10-07)
 
 

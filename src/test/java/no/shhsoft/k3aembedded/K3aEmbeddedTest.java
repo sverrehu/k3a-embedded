@@ -32,7 +32,7 @@ public final class K3aEmbeddedTest {
 
     @BeforeClass
     public static void beforeClass() {
-        kafka = new K3aEmbedded();
+        kafka = new K3aEmbedded.Builder().build();
         kafka.start();
     }
 
@@ -44,7 +44,7 @@ public final class K3aEmbeddedTest {
     @Test
     public void shouldProduceAndConsume() {
         try (final Producer<Integer, Integer> producer = getProducer()) {
-            try (final Consumer<Integer, Integer> consumer = getConsumer(CONSUMER_GROUP_ID)) {
+            try (final Consumer<Integer, Integer> consumer = getConsumer()) {
                 consumer.subscribe(Collections.singleton(TOPIC));
                 produce(producer);
                 final int consumedValue = consume(consumer);
@@ -65,9 +65,9 @@ public final class K3aEmbeddedTest {
         return new KafkaProducer<>(map);
     }
 
-    private Consumer<Integer, Integer> getConsumer(final String consumerGroupId) {
+    private Consumer<Integer, Integer> getConsumer() {
         final Map<String, Object> map = getCommonConfig();
-        map.put(ConsumerConfig.GROUP_ID_CONFIG, consumerGroupId);
+        map.put(ConsumerConfig.GROUP_ID_CONFIG, K3aEmbeddedTest.CONSUMER_GROUP_ID);
         map.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         map.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
         map.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, IntegerDeserializer.class);

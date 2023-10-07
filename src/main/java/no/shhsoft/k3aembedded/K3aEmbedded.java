@@ -22,25 +22,66 @@ import java.util.Map;
 
 public final class K3aEmbedded {
 
-    private static final String NODE_ID = "1";
-    private int brokerPort = -1;
+    private static final int NODE_ID = 1;
     private Server server;
     private Path logDirectory;
+    private final int brokerPort;
+    private final int controllerPort;
+    private final Map<String, Object> additionalConfiguration;
+    private final AdditionalConfigurationProvider additionalConfigurationProvider;
 
-    private HashMap<String, String> getConfigMap(final Path logDir, final int brokerPort, final int controllerPort) {
-        final HashMap<String, String> map = new HashMap<>();
-        map.put("node.id", NODE_ID);
-        map.put("process.roles", "broker, controller");
-        map.put("controller.quorum.voters", NODE_ID + "@localhost:" + controllerPort);
-        map.put("controller.listener.names", "CONTROLLER");
-        map.put("inter.broker.listener.name", "BROKER");
-        map.put("listeners", "BROKER://:" + brokerPort + ", CONTROLLER://:" + controllerPort);
-        map.put("listener.security.protocol.map", "BROKER:PLAINTEXT, CONTROLLER:PLAINTEXT");
-        map.put("log.dir", logDir.toString());
-        map.put("offsets.topic.num.partitions", "1");
-        map.put("offsets.topic.replication.factor", "1");
-        map.put("group.initial.rebalance.delay.ms", "0");
-        return map;
+    public interface AdditionalConfigurationProvider {
+
+        Map<String, Object> getAdditionalConfiguration();
+
+    }
+
+    public static final class Builder {
+
+        private int brokerPort = -1;
+        private int controllerPort = -1;
+        private Map<String, Object> additionalConfiguration;
+        private AdditionalConfigurationProvider additionalConfigurationProvider;
+
+        public K3aEmbedded build() {
+            return new K3aEmbedded(brokerPort, controllerPort, additionalConfiguration, additionalConfigurationProvider);
+        }
+
+        public Builder brokerPort(final int brokerPort) {
+            this.brokerPort = brokerPort;
+            return this;
+        }
+
+        public Builder controllerPort(final int controllerPort) {
+            this.controllerPort = controllerPort;
+            return this;
+        }
+
+        public Builder additionalConfiguration(final Map<String, Object> additionalConfiguration) {
+            this.additionalConfiguration = additionalConfiguration;
+            return this;
+        }
+
+        public Builder additionalConfigurationProvider(final AdditionalConfigurationProvider additionalConfigurationProvider) {
+            this.additionalConfigurationProvider = additionalConfigurationProvider;
+            return this;
+        }
+
+    }
+
+    /**
+     * @deprecated Use Builder instead.
+     */
+    @Deprecated
+    public K3aEmbedded() {
+        this(-1, -1, null, null);
+    }
+
+    private K3aEmbedded(final int brokerPort, final int controllerPort, final Map<String, Object> additionalConfiguration, final AdditionalConfigurationProvider additionalConfigurationProvider) {
+        this.brokerPort = brokerPort >= 0 ? brokerPort : NetworkUtils.getRandomAvailablePort();
+        this.controllerPort = controllerPort >= 0 ? controllerPort : NetworkUtils.getRandomAvailablePort();
+        this.additionalConfiguration = additionalConfiguration;
+        this.additionalConfigurationProvider = additionalConfigurationProvider;
     }
 
     public void start() {
@@ -48,9 +89,7 @@ public final class K3aEmbedded {
             throw new RuntimeException("Server already started");
         }
         logDirectory = createKafkaLogDirectory();
-        brokerPort = NetworkUtils.getRandomAvailablePort();
-        final int controllerPort = NetworkUtils.getRandomAvailablePort();
-        final Map<String, String> map = getConfigMap(logDirectory, brokerPort, controllerPort);
+        final Map<String, Object> map = getConfigMap();
         final KafkaConfig config = new KafkaConfig(map);
         formatKafkaLogDirectory(config);
         server = new KafkaRaftServer(config, Time.SYSTEM);
@@ -72,8 +111,42 @@ public final class K3aEmbedded {
         return brokerPort;
     }
 
+    public int getControllerPort() {
+        return controllerPort;
+    }
+
     public String getBootstrapServers() {
         return "localhost:" + getBrokerPort();
+    }
+
+    private HashMap<String, Object> getConfigMap() {
+        final HashMap<String, Object> map = new HashMap<>();
+        map.put("node.id", String.valueOf(NODE_ID));
+        map.put("process.roles", "broker, controller");
+        map.put("controller.quorum.voters", NODE_ID + "@localhost:" + controllerPort);
+        map.put("controller.listener.names", "CONTROLLER");
+        map.put("inter.broker.listener.name", "BROKER");
+        map.put("listeners", "BROKER://:" + brokerPort + ", CONTROLLER://:" + controllerPort);
+        map.put("listener.security.protocol.map", "BROKER:PLAINTEXT, CONTROLLER:PLAINTEXT");
+        map.put("log.dir", logDirectory.toString());
+        map.put("offsets.topic.num.partitions", "1");
+        map.put("offsets.topic.replication.factor", "1");
+        map.put("group.initial.rebalance.delay.ms", "0");
+        validateAndAddConfiguration(map, additionalConfiguration);
+        if (additionalConfigurationProvider != null) {
+            validateAndAddConfiguration(map, additionalConfigurationProvider.getAdditionalConfiguration());
+        }
+        return map;
+    }
+
+    private void validateAndAddConfiguration(final HashMap<String, Object> map, final Map<String, Object> additionalConfiguration) {
+        if (additionalConfiguration == null) {
+            return;
+        }
+        if (additionalConfiguration.containsKey("node.id") && !map.get("node.id").toString().equals(additionalConfiguration.get("node.id").toString())) {
+            throw new RuntimeException("node.id cannot be overriden");
+        }
+        map.putAll(additionalConfiguration);
     }
 
     private Path createKafkaLogDirectory() {

@@ -48,7 +48,7 @@ getting the correct Kafka bootstrap servers (the latter will be
 
     @BeforeClass
     public static void beforeClass() {
-        kafka = new K3aEmbedded();
+        kafka = new K3aEmbedded.Builder().build();
         kafka.start();
     }
 

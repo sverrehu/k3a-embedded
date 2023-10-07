@@ -48,12 +48,12 @@ public final class K3aEmbedded {
         }
 
         public Builder brokerPort(final int brokerPort) {
-            this.brokerPort = brokerPort;
+            this.brokerPort = validatePort(brokerPort);
             return this;
         }
 
         public Builder controllerPort(final int controllerPort) {
-            this.controllerPort = controllerPort;
+            this.controllerPort = validatePort(controllerPort);
             return this;
         }
 
@@ -67,6 +67,12 @@ public final class K3aEmbedded {
             return this;
         }
 
+        private static int validatePort(final int port) {
+            if (port < 1 || port > 65535) {
+                throw new RuntimeException("Ports must be in the range 1 to 65535");
+            }
+            return port;
+        }
     }
 
     /**
@@ -78,8 +84,8 @@ public final class K3aEmbedded {
     }
 
     private K3aEmbedded(final int brokerPort, final int controllerPort, final Map<String, Object> additionalConfiguration, final AdditionalConfigurationProvider additionalConfigurationProvider) {
-        this.brokerPort = brokerPort >= 0 ? brokerPort : NetworkUtils.getRandomAvailablePort();
-        this.controllerPort = controllerPort >= 0 ? controllerPort : NetworkUtils.getRandomAvailablePort();
+        this.brokerPort = brokerPort > 0 ? brokerPort : NetworkUtils.getRandomAvailablePort();
+        this.controllerPort = controllerPort > 0 ? controllerPort : NetworkUtils.getRandomAvailablePort();
         this.additionalConfiguration = additionalConfiguration;
         this.additionalConfigurationProvider = additionalConfigurationProvider;
     }

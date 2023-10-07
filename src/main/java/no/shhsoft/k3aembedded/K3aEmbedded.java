@@ -164,8 +164,16 @@ public final class K3aEmbedded {
         return controllerPort;
     }
 
+    public int getAdditionalPort(final int index) {
+        return additionalPorts[index];
+    }
+
     public String getBootstrapServers() {
         return "localhost:" + getBrokerPort();
+    }
+
+    public String getBootstrapServersForAdditionalPort(final int index) {
+        return "localhost:" + additionalPorts[index];
     }
 
     private HashMap<String, Object> getConfigMap() {

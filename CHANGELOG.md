@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.2.2](https://github.com/sverrehu/k3a-embedded/compare/v0.2.1...v0.2.2) (2023-10-07)
+
+
+### Bug Fixes
+
+* correct scope on slf4j backend ([#34](https://github.com/sverrehu/k3a-embedded/issues/34)) ([b3dbee1](https://github.com/sverrehu/k3a-embedded/commit/b3dbee1537aa107ad052fced1e4cfd9eb7b7033a))
+
+
+### Documentation
+
+* Update README with pom.xml instructions ([#32](https://github.com/sverrehu/k3a-embedded/issues/32)) ([2f3cdbc](https://github.com/sverrehu/k3a-embedded/commit/2f3cdbcbca85211a5782cde9d7fc7a8f3c293565))
+
 ## [0.2.1](https://github.com/sverrehu/k3a-embedded/compare/v0.2.0...v0.2.1) (2023-10-07)
 
 

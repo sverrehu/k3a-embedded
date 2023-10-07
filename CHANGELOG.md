@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0](https://github.com/sverrehu/k3a-embedded/compare/v0.1.3...v0.2.0) (2023-10-07)
+
+
+### Features
+
+* New home at Maven Central ([#27](https://github.com/sverrehu/k3a-embedded/issues/27)) ([b9a3b22](https://github.com/sverrehu/k3a-embedded/commit/b9a3b222755d6a10bbbd67ba13933fa37ce5998d))
+
 ## [0.1.3](https://github.com/sverrehu/k3a-embedded/compare/v0.1.2...v0.1.3) (2023-10-07)
 
 

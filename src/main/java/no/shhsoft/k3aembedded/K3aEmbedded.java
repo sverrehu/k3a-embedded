@@ -85,6 +85,12 @@ public final class K3aEmbedded {
     }
 
     private void formatKafkaLogDirectory(final KafkaConfig kafkaConfig) {
+        /* This is to mimic the command line formatting of the log directory,
+         * which is required when KRaft mode is used. Easiest approach would be to
+         * call StorageTool.main with the correct command line arguments, but
+         * unfortunately the main method does an explicit exit at the end.
+         * So this is the second best: Mimic what StorageTool.main does for
+         * the "format" command. */
         if (logDirectory == null) {
             throw new RuntimeException("No log directory. This should not happen.");
         }

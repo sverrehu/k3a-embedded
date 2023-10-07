@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.1](https://github.com/sverrehu/k3a-embedded/compare/v0.3.0...v0.3.1) (2023-10-07)
+
+
+### Bug Fixes
+
+* Downgrade to Java 11 ([#44](https://github.com/sverrehu/k3a-embedded/issues/44)) ([77a89d2](https://github.com/sverrehu/k3a-embedded/commit/77a89d249c6cecca2329fa8229b2b98f3c29331f))
+
 ## [0.3.0](https://github.com/sverrehu/k3a-embedded/compare/v0.2.2...v0.3.0) (2023-10-07)
 
 

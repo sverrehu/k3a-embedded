@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.2](https://github.com/sverrehu/k3a-embedded/compare/v0.1.1...v0.1.2) (2023-10-07)
+
+
+### Bug Fixes
+
+* Add signing ([#21](https://github.com/sverrehu/k3a-embedded/issues/21)) ([eb63be2](https://github.com/sverrehu/k3a-embedded/commit/eb63be23e461ccecd251a9af9bcb4d1dcce8a71b))
+
 ## [0.1.1](https://github.com/sverrehu/k3a-embedded/compare/v0.1.0...v0.1.1) (2023-10-06)
 
 

@@ -29,6 +29,8 @@ public abstract class AbstractK3aEmbeddedTest {
 
     protected abstract String getBootstrapServers();
 
+    protected abstract Map<String, Object> getAdditionalClientConfig();
+
     @Test
     public void shouldProduceAndConsume() {
         try (final Producer<Integer, Integer> producer = getProducer()) {
@@ -66,6 +68,7 @@ public abstract class AbstractK3aEmbeddedTest {
     private Map<String, Object> getCommonConfig() {
         final Map<String, Object> map = new HashMap<>();
         map.put(CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG, getBootstrapServers());
+        map.putAll(getAdditionalClientConfig());
         return map;
     }
 

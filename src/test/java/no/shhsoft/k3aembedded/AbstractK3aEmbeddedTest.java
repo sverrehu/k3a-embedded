@@ -12,9 +12,7 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.IntegerDeserializer;
 import org.apache.kafka.common.serialization.IntegerSerializer;
-import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.time.Duration;
@@ -23,23 +21,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-public final class K3aEmbeddedTest {
+public abstract class AbstractK3aEmbeddedTest {
 
-    private static K3aEmbedded kafka;
     private static final String TOPIC = "the-topic";
     private static final String CONSUMER_GROUP_ID = "consumer-group";
     private int lastProducedValue = 0;
 
-    @BeforeClass
-    public static void beforeClass() {
-        kafka = new K3aEmbedded.Builder().build();
-        kafka.start();
-    }
-
-    @AfterClass
-    public static void afterClass() {
-        kafka.stop();
-    }
+    protected abstract String getBootstrapServers();
 
     @Test
     public void shouldProduceAndConsume() {
@@ -67,7 +55,7 @@ public final class K3aEmbeddedTest {
 
     private Consumer<Integer, Integer> getConsumer() {
         final Map<String, Object> map = getCommonConfig();
-        map.put(ConsumerConfig.GROUP_ID_CONFIG, K3aEmbeddedTest.CONSUMER_GROUP_ID);
+        map.put(ConsumerConfig.GROUP_ID_CONFIG, AbstractK3aEmbeddedTest.CONSUMER_GROUP_ID);
         map.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         map.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
         map.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, IntegerDeserializer.class);
@@ -77,7 +65,7 @@ public final class K3aEmbeddedTest {
 
     private Map<String, Object> getCommonConfig() {
         final Map<String, Object> map = new HashMap<>();
-        map.put(CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG, kafka.getBootstrapServers());
+        map.put(CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG, getBootstrapServers());
         return map;
     }
 

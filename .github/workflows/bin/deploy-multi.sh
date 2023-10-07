@@ -17,8 +17,8 @@ do
     mvn versions:set -DnewVersion="$NEW_VERSION"
     mvn versions:commit
     sed -i~ -re 's/<kafka.version>.*<\/kafka.version>/<kafka.version>'"$KAFKA_VERSION"'<\/kafka.version>/' pom.xml
-    mvn --batch-mode deploy
+    mvn --batch-mode clean deploy
 done
 mv pom.xml.old pom.xml
 rm -f pom.xml.versionsBackup
-mvn --batch-mode deploy
+mvn --batch-mode clean deploy

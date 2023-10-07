@@ -26,7 +26,7 @@ jobs:
           server-password: MAVEN_SONATYPE_PASSPHRASE
           cache: maven
       - name: Publish package
-        run: ./bin/deploy-multi.sh
+        run: ./.github/workflows/bin/deploy-multi.sh
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}

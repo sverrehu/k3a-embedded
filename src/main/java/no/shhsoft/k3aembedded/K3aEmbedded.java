@@ -111,14 +111,6 @@ public final class K3aEmbedded {
 
     }
 
-    /**
-     * @deprecated Use Builder instead.
-     */
-    @Deprecated
-    public K3aEmbedded() {
-        this(-1, -1, 0, null, null, Collections.emptyList());
-    }
-
     private K3aEmbedded(final int brokerPort, final int controllerPort, final int numAdditionalPorts,
                         final Map<String, Object> additionalConfiguration, final AdditionalConfigurationProvider additionalConfigurationProvider,
                         final List<AdditionalListener> additionalListeners) {

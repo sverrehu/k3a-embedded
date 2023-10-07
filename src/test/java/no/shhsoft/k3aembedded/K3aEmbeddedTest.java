@@ -32,7 +32,7 @@ public final class K3aEmbeddedTest {
 
     @BeforeClass
     public static void beforeClass() {
-        kafka = new K3aEmbedded();
+        kafka = new K3aEmbedded.Builder().build();
         kafka.start();
     }
 

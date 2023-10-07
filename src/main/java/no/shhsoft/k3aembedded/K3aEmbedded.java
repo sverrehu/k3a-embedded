@@ -27,6 +27,14 @@ public final class K3aEmbedded {
     private Server server;
     private Path logDirectory;
 
+    public static final class Builder {
+
+        public K3aEmbedded build() {
+            return new K3aEmbedded();
+        }
+
+    }
+
     private HashMap<String, String> getConfigMap(final Path logDir, final int brokerPort, final int controllerPort) {
         final HashMap<String, String> map = new HashMap<>();
         map.put("node.id", NODE_ID);

@@ -19,8 +19,11 @@ jobs:
         with:
           java-version: "17"
           distribution: "temurin"
+          gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
           cache: maven
       - name: Publish package
         run: ./bin/deploy-multi.sh
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}

@@ -22,7 +22,7 @@ import java.util.Map;
 
 public final class K3aEmbedded {
 
-    private static final String NODE_ID = "1";
+    private static final int NODE_ID = 1;
     private int brokerPort = -1;
     private Server server;
     private Path logDirectory;
@@ -37,7 +37,7 @@ public final class K3aEmbedded {
 
     private HashMap<String, String> getConfigMap(final Path logDir, final int brokerPort, final int controllerPort) {
         final HashMap<String, String> map = new HashMap<>();
-        map.put("node.id", NODE_ID);
+        map.put("node.id", String.valueOf(NODE_ID));
         map.put("process.roles", "broker, controller");
         map.put("controller.quorum.voters", NODE_ID + "@localhost:" + controllerPort);
         map.put("controller.listener.names", "CONTROLLER");

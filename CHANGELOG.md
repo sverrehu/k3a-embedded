@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.2](https://github.com/sverrehu/k3a-embedded/compare/v0.3.1...v0.3.2) (2023-10-07)
+
+
+### Bug Fixes
+
+* Don't deploy a version without Kafka version metadata tag ([#47](https://github.com/sverrehu/k3a-embedded/issues/47)) ([0ce94fb](https://github.com/sverrehu/k3a-embedded/commit/0ce94fbee99360543c2a19db2fce88dca590735b))
+
 ## [0.3.1](https://github.com/sverrehu/k3a-embedded/compare/v0.3.0...v0.3.1) (2023-10-07)
 
 

@@ -78,8 +78,8 @@ public final class K3aEmbedded {
             return this;
         }
 
-        public Builder additionalListenerWithPortIndex(final String name, final String securityProtocol, final int port) {
-            additionalListeners.add(new AdditionalListener(name, securityProtocol, -port));
+        public Builder additionalListenerWithPortIndex(final String name, final String securityProtocol, final int portIndex) {
+            additionalListeners.add(new AdditionalListener(name, securityProtocol, -portIndex));
             return this;
         }
 

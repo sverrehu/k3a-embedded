@@ -6,8 +6,7 @@ tests. No container runtime required.
 
 ## Limitations
 
-* Not at all configurable. Starts a single-node server with no
-  security at all.
+* Starts a single-node "cluster".
 * No Zookeeper. The server runs in KRaft mode.
 
 ## What it does
@@ -63,3 +62,6 @@ getting the correct Kafka bootstrap servers (the latter will be
         return map;
     }
 ```
+
+For an example of setting up SASL, please see [one of the integration
+tests](https://github.com/sverrehu/k3a-embedded/blob/main/src/test/java/no/shhsoft/k3aembedded/SaslK3aEmbeddedTest.java).

@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.3](https://github.com/sverrehu/k3a-embedded/compare/v0.3.2...v0.3.3) (2023-10-11)
+
+
+### Documentation
+
+* minor update to README ([c2a05e1](https://github.com/sverrehu/k3a-embedded/commit/c2a05e14b6ce0a01839dac8e3338bf06f77448bf))
+
 ## [0.3.2](https://github.com/sverrehu/k3a-embedded/compare/v0.3.1...v0.3.2) (2023-10-07)
 
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/sverrehu/k3a-embedded/compare/v0.3.3...v0.4.0) (2023-10-24)
+
+
+### Features
+
+* add test helper methods ([#54](https://github.com/sverrehu/k3a-embedded/issues/54)) ([8e408e3](https://github.com/sverrehu/k3a-embedded/commit/8e408e395cb8b41952aec2e14ac5cb959e0d90a0))
+
 ## [0.3.3](https://github.com/sverrehu/k3a-embedded/compare/v0.3.2...v0.3.3) (2023-10-11)
 
 

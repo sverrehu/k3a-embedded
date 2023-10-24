@@ -4,6 +4,8 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.IntegerDeserializer;
 import org.apache.kafka.common.serialization.IntegerSerializer;
+import org.apache.kafka.common.serialization.StringDeserializer;
+import org.apache.kafka.common.serialization.StringSerializer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,7 +17,7 @@ public final class K3aTestUtils {
     }
 
     /**
-     * Set up test properties for an {@code <Integer, Integer>} consumer.
+     * Set up test properties for an {@code <Integer, String>} consumer.
      * @param group the group id.
      * @param autoCommit the auto commit.
      * @param k3aEmbedded a {@link K3aEmbedded} instance.
@@ -26,7 +28,7 @@ public final class K3aTestUtils {
     }
 
     /**
-     * Set up test properties for an {@code <Integer, Integer>} producer.
+     * Set up test properties for an {@code <Integer, String>} producer.
      * @param k3aEmbedded a {@link K3aEmbedded} instance.
      * @return the properties.
      */
@@ -44,7 +46,7 @@ public final class K3aTestUtils {
     }
 
     /**
-     * Set up test properties for an {@code <Integer, Integer>} consumer.
+     * Set up test properties for an {@code <Integer, String>} consumer.
      * @param bootstrapServers the bootstrapServers property.
      * @param group the group id.
      * @param autoCommit the auto commit.
@@ -58,12 +60,12 @@ public final class K3aTestUtils {
         map.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, "10");
         map.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         map.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, IntegerDeserializer.class);
-        map.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, IntegerDeserializer.class);
+        map.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         return map;
     }
 
     /**
-     * Set up test properties for an {@code <Integer, Integer>} producer.
+     * Set up test properties for an {@code <Integer, String>} producer.
      * @param bootstrapServers the bootstrapServers property.
      * @return the properties.
      */
@@ -76,7 +78,7 @@ public final class K3aTestUtils {
         map.put(ProducerConfig.LINGER_MS_CONFIG, "0");
         map.put(ProducerConfig.RETRIES_CONFIG, "0");
         map.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, IntegerSerializer.class);
-        map.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, IntegerSerializer.class);
+        map.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         return map;
     }
 

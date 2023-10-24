@@ -27,8 +27,8 @@ public abstract class AbstractK3aEmbeddedTest {
 
     @Test
     public void shouldProduceAndConsume() {
-        try (final Producer<Integer, Integer> producer = getProducer()) {
-            try (final Consumer<Integer, Integer> consumer = getConsumer()) {
+        try (final Producer<Integer, String> producer = getProducer()) {
+            try (final Consumer<Integer, String> consumer = getConsumer()) {
                 consumer.subscribe(Collections.singleton(TOPIC));
                 produce(producer);
                 final int consumedValue = consume(consumer);
@@ -37,20 +37,20 @@ public abstract class AbstractK3aEmbeddedTest {
         }
     }
 
-    public Producer<Integer, Integer> getProducer() {
+    public Producer<Integer, String> getProducer() {
         final Map<String, Object> map = K3aTestUtils.producerProps(getBootstrapServers());
         map.putAll(getAdditionalClientConfig());
         return new KafkaProducer<>(map);
     }
 
-    private Consumer<Integer, Integer> getConsumer() {
+    private Consumer<Integer, String> getConsumer() {
         final Map<String, Object> map = K3aTestUtils.consumerProps(getBootstrapServers(), AbstractK3aEmbeddedTest.CONSUMER_GROUP_ID, false);
         map.putAll(getAdditionalClientConfig());
         return new KafkaConsumer<>(map);
     }
 
-    private void produce(final Producer<Integer, Integer> producer) {
-        final ProducerRecord<Integer, Integer> record = new ProducerRecord<>(TOPIC, 0, ++lastProducedValue);
+    private void produce(final Producer<Integer, String> producer) {
+        final ProducerRecord<Integer, String> record = new ProducerRecord<>(TOPIC, 0, String.valueOf(++lastProducedValue));
         try {
             producer.send(record, (metadata, exception) -> {
                 if (exception != null) {
@@ -64,11 +64,11 @@ public abstract class AbstractK3aEmbeddedTest {
         producer.flush();
     }
 
-    private int consume(final Consumer<Integer, Integer> consumer) {
+    private int consume(final Consumer<Integer, String> consumer) {
         int lastValue = -1;
-        final ConsumerRecords<Integer, Integer> records = consumer.poll(Duration.ofMillis(5000));
-        for (final ConsumerRecord<Integer, Integer> record : records) {
-            lastValue = record.value();
+        final ConsumerRecords<Integer, String> records = consumer.poll(Duration.ofMillis(5000));
+        for (final ConsumerRecord<Integer, String> record : records) {
+            lastValue = Integer.valueOf(record.value());
             consumer.commitAsync();
         }
         return lastValue;

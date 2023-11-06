@@ -27,8 +27,10 @@ public final class K3aEmbedded {
     private static final int NODE_ID = 1;
     private Server server;
     private Path logDirectory;
+    private final boolean kraftMode;
     private final int brokerPort;
     private final int controllerPort;
+    private final int zooKeeperPort;
     private final int[] additionalPorts;
     private final Map<String, Object> additionalConfiguration;
     private final AdditionalConfigurationProvider additionalConfigurationProvider;
@@ -42,15 +44,23 @@ public final class K3aEmbedded {
 
     public static final class Builder {
 
+        private boolean kraftMode = true;
         private int brokerPort = -1;
         private int controllerPort = -1;
+        private int zooKeeperPort = -1;
         private int numAdditionalPorts = 0;
         private Map<String, Object> additionalConfiguration;
         private AdditionalConfigurationProvider additionalConfigurationProvider;
         private final List<AdditionalListener> additionalListeners = new ArrayList<>();
 
         public K3aEmbedded build() {
-            return new K3aEmbedded(brokerPort, controllerPort, numAdditionalPorts, additionalConfiguration, additionalConfigurationProvider, additionalListeners);
+            return new K3aEmbedded(kraftMode, brokerPort, controllerPort, zooKeeperPort, numAdditionalPorts,
+                                   additionalConfiguration, additionalConfigurationProvider, additionalListeners);
+        }
+
+        public Builder kraftMode(final boolean kraftMode) {
+            this.kraftMode = kraftMode;
+            return this;
         }
 
         public Builder brokerPort(final int brokerPort) {
@@ -60,6 +70,11 @@ public final class K3aEmbedded {
 
         public Builder controllerPort(final int controllerPort) {
             this.controllerPort = validatePort(controllerPort);
+            return this;
+        }
+
+        public Builder zooKeeperPort(final int zooKeeperPort) {
+            this.zooKeeperPort = validatePort(zooKeeperPort);
             return this;
         }
 
@@ -111,11 +126,13 @@ public final class K3aEmbedded {
 
     }
 
-    private K3aEmbedded(final int brokerPort, final int controllerPort, final int numAdditionalPorts,
+    private K3aEmbedded(final boolean kraftMode, final int brokerPort, final int controllerPort, final int zooKeeperPort, final int numAdditionalPorts,
                         final Map<String, Object> additionalConfiguration, final AdditionalConfigurationProvider additionalConfigurationProvider,
                         final List<AdditionalListener> additionalListeners) {
+        this.kraftMode = kraftMode;
         this.brokerPort = brokerPort > 0 ? brokerPort : NetworkUtils.getRandomAvailablePort();
         this.controllerPort = controllerPort > 0 ? controllerPort : NetworkUtils.getRandomAvailablePort();
+        this.zooKeeperPort = zooKeeperPort > 0 ? zooKeeperPort : NetworkUtils.getRandomAvailablePort();
         this.additionalConfiguration = additionalConfiguration;
         this.additionalConfigurationProvider = additionalConfigurationProvider;
         this.additionalListeners = additionalListeners;
@@ -154,6 +171,10 @@ public final class K3aEmbedded {
 
     public int getControllerPort() {
         return controllerPort;
+    }
+
+    public int getZooKeeperPort() {
+        return zooKeeperPort;
     }
 
     public int getAdditionalPort(final int index) {

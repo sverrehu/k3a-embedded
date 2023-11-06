@@ -1,6 +1,5 @@
 package no.shhsoft.k3aembedded;
 
-import org.apache.zookeeper.ZooKeeperMain;
 import org.apache.zookeeper.server.ServerConfig;
 import org.apache.zookeeper.server.ZooKeeperServerMain;
 

@@ -7,23 +7,41 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 import java.time.Duration;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public abstract class AbstractK3aEmbeddedTest {
 
     private static final String TOPIC = "the-topic";
     private static final String CONSUMER_GROUP_ID = "consumer-group";
     private int lastProducedValue = 0;
+    private K3aEmbedded kafka;
 
     protected abstract String getBootstrapServers();
 
     protected abstract Map<String, Object> getAdditionalClientConfig();
+
+    protected abstract K3aEmbedded.Builder getK3aEmbeddedBuilder();
+
+    @BeforeAll
+    public void beforeClass() {
+        kafka = getK3aEmbeddedBuilder().build();
+        kafka.start();
+    }
+
+    @AfterAll
+    public void afterClass() {
+        kafka.stop();
+    }
 
     @Test
     public void shouldProduceAndConsume() {
@@ -32,9 +50,13 @@ public abstract class AbstractK3aEmbeddedTest {
                 consumer.subscribe(Collections.singleton(TOPIC));
                 produce(producer);
                 final int consumedValue = consume(consumer);
-                Assert.assertEquals(lastProducedValue, consumedValue);
+                Assertions.assertEquals(lastProducedValue, consumedValue);
             }
         }
+    }
+
+    public K3aEmbedded getKafka() {
+        return kafka;
     }
 
     public Producer<Integer, String> getProducer() {

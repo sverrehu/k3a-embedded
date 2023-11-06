@@ -1,30 +1,22 @@
 package no.shhsoft.k3aembedded;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.TestInstance;
 
 import java.util.Collections;
 import java.util.Map;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public final class PlainK3aEmbeddedTest
 extends AbstractK3aEmbeddedTest {
 
-    private static K3aEmbedded kafka;
-
-    @BeforeClass
-    public static void beforeClass() {
-        kafka = new K3aEmbedded.Builder().build();
-        kafka.start();
-    }
-
-    @AfterClass
-    public static void afterClass() {
-        kafka.stop();
+    @Override
+    protected K3aEmbedded.Builder getK3aEmbeddedBuilder() {
+        return new K3aEmbedded.Builder();
     }
 
     @Override
     protected String getBootstrapServers() {
-        return kafka.getBootstrapServers();
+        return getKafka().getBootstrapServers();
     }
 
     @Override

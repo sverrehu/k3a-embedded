@@ -26,6 +26,8 @@ public abstract class AbstractK3aEmbeddedTest {
     private int lastProducedValue = 0;
     private K3aEmbedded kafka;
 
+    protected abstract boolean isKraftMode();
+
     protected abstract String getBootstrapServers();
 
     protected abstract Map<String, Object> getAdditionalClientConfig();
@@ -33,18 +35,18 @@ public abstract class AbstractK3aEmbeddedTest {
     protected abstract K3aEmbedded.Builder getK3aEmbeddedBuilder();
 
     @BeforeAll
-    public void beforeClass() {
+    public final void beforeClass() {
         kafka = getK3aEmbeddedBuilder().build();
         kafka.start();
     }
 
     @AfterAll
-    public void afterClass() {
+    public final void afterClass() {
         kafka.stop();
     }
 
     @Test
-    public void shouldProduceAndConsume() {
+    public final void shouldProduceAndConsume() {
         try (final Producer<Integer, String> producer = getProducer()) {
             try (final Consumer<Integer, String> consumer = getConsumer()) {
                 consumer.subscribe(Collections.singleton(TOPIC));
@@ -55,11 +57,11 @@ public abstract class AbstractK3aEmbeddedTest {
         }
     }
 
-    public K3aEmbedded getKafka() {
+    public final K3aEmbedded getKafka() {
         return kafka;
     }
 
-    public Producer<Integer, String> getProducer() {
+    private Producer<Integer, String> getProducer() {
         final Map<String, Object> map = K3aTestUtils.producerProps(getBootstrapServers());
         map.putAll(getAdditionalClientConfig());
         return new KafkaProducer<>(map);

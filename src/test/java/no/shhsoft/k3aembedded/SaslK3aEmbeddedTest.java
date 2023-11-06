@@ -1,38 +1,29 @@
 package no.shhsoft.k3aembedded;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.TestInstance;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public final class SaslK3aEmbeddedTest
 extends AbstractK3aEmbeddedTest {
 
-    private static K3aEmbedded kafka;
-
-    @BeforeClass
-    public static void beforeClass() {
+    @Override
+    protected K3aEmbedded.Builder getK3aEmbeddedBuilder() {
         final Map<String, Object> map = new HashMap<>();
         map.put("listener.name.sasl_plaintext.sasl.enabled.mechanisms", "PLAIN");
         map.put("listener.name.sasl_plaintext.plain.sasl.jaas.config",
                 "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"kafka\" password=\"kafka\" user_kafka=\"kafka\";");
-        kafka = new K3aEmbedded.Builder()
+        return new K3aEmbedded.Builder()
                 .additionalPorts(1)
                 .additionalConfiguration(map)
-                .additionalListenerWithPortIndex("SASL_PLAINTEXT", "SASL_PLAINTEXT", 0)
-                .build();
-        kafka.start();
-    }
-
-    @AfterClass
-    public static void afterClass() {
-        kafka.stop();
+                .additionalListenerWithPortIndex("SASL_PLAINTEXT", "SASL_PLAINTEXT", 0);
     }
 
     @Override
     protected String getBootstrapServers() {
-        return kafka.getBootstrapServersForAdditionalPort(0);
+        return getKafka().getBootstrapServersForAdditionalPort(0);
     }
 
     @Override

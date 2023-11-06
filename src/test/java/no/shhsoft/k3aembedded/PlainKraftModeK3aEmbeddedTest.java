@@ -1,13 +1,10 @@
 package no.shhsoft.k3aembedded;
 
-import org.junit.jupiter.api.TestInstance;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 
-import java.util.Collections;
-import java.util.Map;
-
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public final class PlainK3aEmbeddedTest
-extends AbstractK3aEmbeddedTest {
+public final class PlainKraftModeK3aEmbeddedTest
+extends AbstractPlainK3aEmbeddedTest {
 
     @Override
     protected K3aEmbedded.Builder getK3aEmbeddedBuilder() {
@@ -16,7 +13,7 @@ extends AbstractK3aEmbeddedTest {
 
     @Override
     protected String getBootstrapServers() {
-        return getKafka().getBootstrapServers();
+        return kafka.getBootstrapServers();
     }
 
     @Override

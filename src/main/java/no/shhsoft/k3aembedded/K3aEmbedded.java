@@ -2,15 +2,18 @@ package no.shhsoft.k3aembedded;
 
 import kafka.server.KafkaConfig;
 import kafka.server.KafkaRaftServer;
+import kafka.server.KafkaServer;
 import kafka.server.MetaProperties;
 import kafka.server.Server;
 import kafka.tools.StorageTool;
 import org.apache.kafka.common.Uuid;
 import org.apache.kafka.common.utils.Time;
 import org.apache.kafka.metadata.bootstrap.BootstrapMetadata;
+import org.apache.kafka.server.common.ApiMessageAndVersion;
 import org.apache.kafka.server.common.MetadataVersion;
 import scala.Option;
 import scala.collection.immutable.Seq;
+import scala.collection.mutable.ArrayBuffer;
 import scala.jdk.CollectionConverters;
 
 import java.io.IOException;
@@ -27,6 +30,7 @@ public final class K3aEmbedded {
     private static final int NODE_ID = 1;
     private Server server;
     private Path logDirectory;
+    private ZooKeeper zooKeeper;
     private final boolean kraftMode;
     private final int brokerPort;
     private final int controllerPort;
@@ -140,17 +144,27 @@ public final class K3aEmbedded {
         for (int q = 0; q < this.additionalPorts.length; q++) {
             this.additionalPorts[q] = NetworkUtils.getRandomAvailablePort();
         }
+        if (!this.kraftMode) {
+            this.zooKeeper = new ZooKeeper(this.zooKeeperPort);
+        }
     }
 
     public void start() {
         if (server != null) {
             throw new RuntimeException("Server already started");
         }
+        if (!kraftMode) {
+            zooKeeper.start();
+        }
         logDirectory = createKafkaLogDirectory();
         final Map<String, Object> map = getConfigMap();
         final KafkaConfig config = new KafkaConfig(map);
-        formatKafkaLogDirectory(config);
-        server = new KafkaRaftServer(config, Time.SYSTEM);
+        if (kraftMode) {
+            formatKafkaLogDirectory(config);
+            server = new KafkaRaftServer(config, Time.SYSTEM);
+        } else {
+            server = new KafkaServer(config, Time.SYSTEM, Option.empty(), false);
+        }
         server.startup();
     }
 
@@ -163,6 +177,10 @@ public final class K3aEmbedded {
         server = null;
         FileUtils.deleteRecursively(logDirectory.toFile());
         logDirectory = null;
+        if (!kraftMode) {
+            zooKeeper.stop();
+            zooKeeper = null;
+        }
     }
 
     public int getBrokerPort() {
@@ -191,10 +209,14 @@ public final class K3aEmbedded {
 
     private HashMap<String, Object> getConfigMap() {
         final HashMap<String, Object> map = new HashMap<>();
-        map.put("node.id", String.valueOf(NODE_ID));
-        map.put("process.roles", "broker, controller");
-        map.put("controller.quorum.voters", NODE_ID + "@localhost:" + controllerPort);
-        map.put("controller.listener.names", "CONTROLLER");
+        if (kraftMode) {
+            map.put("node.id", String.valueOf(NODE_ID));
+            map.put("process.roles", "broker, controller");
+            map.put("controller.quorum.voters", NODE_ID + "@localhost:" + controllerPort);
+            map.put("controller.listener.names", "CONTROLLER");
+        } else {
+            map.put("zookeeper.connect", "localhost:" + zooKeeperPort);
+        }
         map.put("inter.broker.listener.name", "BROKER");
         map.put("listeners", getListenersString());
         map.put("listener.security.protocol.map", getSecurityProtocolsString());
@@ -211,7 +233,10 @@ public final class K3aEmbedded {
 
     private String getListenersString() {
         final StringBuilder sb = new StringBuilder();
-        sb.append("BROKER://:" + brokerPort + ", CONTROLLER://:" + controllerPort);
+        sb.append("BROKER://:" + brokerPort);
+        if (kraftMode) {
+            sb.append(", CONTROLLER://:" + controllerPort);
+        }
         for (final AdditionalListener additionalListener : additionalListeners) {
             final int port = additionalListener.port <= 0 ? additionalPorts[additionalListener.port] : additionalListener.port;
             sb.append(", " + additionalListener.name + "://:" + port);
@@ -221,28 +246,29 @@ public final class K3aEmbedded {
 
     private String getSecurityProtocolsString() {
         final StringBuilder sb = new StringBuilder();
-        sb.append("BROKER:PLAINTEXT, CONTROLLER:PLAINTEXT");
+        sb.append("BROKER:PLAINTEXT");
+        if (kraftMode) {
+            sb.append(", CONTROLLER:PLAINTEXT");
+        }
         for (final AdditionalListener additionalListener : additionalListeners) {
             sb.append(", " + additionalListener.name + ":" + additionalListener.securityProtocol);
         }
         return sb.toString();
     }
+
     private void validateAndAddConfiguration(final HashMap<String, Object> map, final Map<String, Object> additionalConfiguration) {
         if (additionalConfiguration == null) {
             return;
         }
-        if (additionalConfiguration.containsKey("node.id") && !map.get("node.id").toString().equals(additionalConfiguration.get("node.id").toString())) {
+        if (kraftMode && additionalConfiguration.containsKey("node.id")
+            && !map.get("node.id").toString().equals(additionalConfiguration.get("node.id").toString())) {
             throw new RuntimeException("node.id cannot be overriden");
         }
         map.putAll(additionalConfiguration);
     }
 
     private Path createKafkaLogDirectory() {
-        try {
-            return Files.createTempDirectory("kafka");
-        } catch (final IOException e) {
-            throw new RuntimeException(e);
-        }
+        return FileUtils.createTempDirectory("kafka");
     }
 
     private void formatKafkaLogDirectory(final KafkaConfig kafkaConfig) {
@@ -258,7 +284,7 @@ public final class K3aEmbedded {
         final String clusterId = Uuid.randomUuid().toString();
         final MetadataVersion metadataVersion = MetadataVersion.latest();
         final MetaProperties metaProperties = StorageTool.buildMetadataProperties(clusterId, kafkaConfig);
-        final BootstrapMetadata bootstrapMetadata = StorageTool.buildBootstrapMetadata(metadataVersion, Option.empty(), "format command");
+        final BootstrapMetadata bootstrapMetadata = StorageTool.buildBootstrapMetadata(metadataVersion, Option.<ArrayBuffer<ApiMessageAndVersion>>empty(), "format command");
         final Seq<String> seq = CollectionConverters.ListHasAsScala(Collections.singletonList(logDirectory.toString())).asScala().toList().toSeq();
         StorageTool.formatCommand(System.out, seq, metaProperties, bootstrapMetadata, metadataVersion, false);
     }

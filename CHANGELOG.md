@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.5.0](https://github.com/sverrehu/k3a-embedded/compare/v0.4.0...v0.5.0) (2023-11-06)
+
+
+### Features
+
+* enable running with ZooKeeper ([#59](https://github.com/sverrehu/k3a-embedded/issues/59)) ([284b1fa](https://github.com/sverrehu/k3a-embedded/commit/284b1fa360a1bcef0d90cd7ff8187e764051584b))
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.apache.zookeeper:zookeeper to v3.8.3 [security] ([#60](https://github.com/sverrehu/k3a-embedded/issues/60)) ([6bd34f4](https://github.com/sverrehu/k3a-embedded/commit/6bd34f4ebb7e233a5681308e8f05c829f817087c))
+
 ## [0.4.0](https://github.com/sverrehu/k3a-embedded/compare/v0.3.3...v0.4.0) (2023-10-24)
 
 

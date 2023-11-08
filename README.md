@@ -45,9 +45,9 @@ This library exposes two classes:
   is the main controller of the Kafka "cluster". To set it up, you use
   the `K3aEmbedded.Builder` class.
 
-*  [`K3aTestUtils`](https://github.com/sverrehu/k3a-embedded/blob/readme/src/main/java/no/shhsoft/k3aembedded/K3aTestUtils.java)
-  is optional, but contains utilities for avoiding to write often-used
-  constructs.
+* [`K3aTestUtils`](https://github.com/sverrehu/k3a-embedded/blob/readme/src/main/java/no/shhsoft/k3aembedded/K3aTestUtils.java)
+  is optional, but contains utilities for avoiding repeating
+  often-used constructs.
 
 For JUnit tests, do something like this for starting, stopping, and
 getting the correct Kafka bootstrap servers, utilizing both classes

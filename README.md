@@ -62,10 +62,10 @@ getting the correct Kafka bootstrap servers (the latter will be
     }
 ```
 
-For an example of setting up SASL, please see [one of the integration
-tests](https://github.com/sverrehu/k3a-embedded/blob/main/src/test/java/no/shhsoft/k3aembedded/SaslK3aEmbeddedTest.java).
-
 ## Using the Builder
+
+
+### Using ZooKeeper instead of KRaft Mode
 
 By default, the broker is started in KRaft mode as a combined broker
 and controller. If your testing requires use of ZooKeeper, you may
@@ -74,6 +74,8 @@ disable KRaft mode with this Builder method:
 ```java
 kraftMode(boolean kraftMode)
 ```
+
+### Specifying Non-random Ports
 
 All network ports will be allocated at random, to avoid collisions
 when running multiple tests in parallell on the same system. If you
@@ -84,6 +86,8 @@ brokerPort(int brokerPort)
 controllerPort(int controllerPort)
 zooKeeperPort(int zooKeeperPort)
 ```
+
+### Adding Custom Listeners
 
 If you intend to set up additional listeners, you can request more
 random ports like this, giving the number of ports you need:
@@ -104,6 +108,12 @@ There's a similar method for adding a listener with a fixed port:
 ```java
 additionalListenerWithFixedPort(String name, String securityProtocol, int port)
 ```
+
+For an example of using an additional listener for setting up SASL,
+please see [one of the integration
+tests](https://github.com/sverrehu/k3a-embedded/blob/main/src/test/java/no/shhsoft/k3aembedded/AbstractSaslK3aEmbeddedTest.java).
+
+### Adding Custom Broker Configuration
 
 `additionalConfiguration(Map<String, Object> additionalConfiguration)`
 `additionalConfigurationProvider(AdditionalConfigurationProvider additionalConfigurationProvider)`

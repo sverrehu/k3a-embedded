@@ -6,7 +6,7 @@ tests. No container runtime required.
 
 ## Limitations
 
-* Starts a single-node "cluster".
+* Only supports starting a single-node "cluster".
 
 ## What it does
 
@@ -55,10 +55,10 @@ getting the correct Kafka bootstrap servers (the latter will be
         kafka.stop();
     }
 
-    private Map<String, Object> getCommonConfig() {
-        final Map<String, Object> map = new HashMap<>();
-        map.put(CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG, kafka.getBootstrapServers());
-        return map;
+    @Test
+    public void shouldProduce() {
+        final Producer<Integer, String> producer = new KafkaProducer<>(K3aTestUtils.producerProps(kafka));
+        /* ... */
     }
 ```
 

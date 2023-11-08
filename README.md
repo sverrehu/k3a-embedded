@@ -37,9 +37,21 @@ The following Kafka versions are supported at the moment:
 * 3.6.0
 * 3.5.1
 
+### The Classes
+
+This library exposes two classes:
+
+* [`K3aEmbedded`](https://github.com/sverrehu/k3a-embedded/blob/readme/src/main/java/no/shhsoft/k3aembedded/K3aEmbedded.java)
+  is the main controller of the Kafka "cluster". To set it up, you use
+  the `K3aEmbedded.Builder` class.
+
+*  [`K3aTestUtils`](https://github.com/sverrehu/k3a-embedded/blob/readme/src/main/java/no/shhsoft/k3aembedded/K3aTestUtils.java)
+  is optional, but contains utilities for avoiding to write often-used
+  constructs.
+
 For JUnit tests, do something like this for starting, stopping, and
-getting the correct Kafka bootstrap servers (the latter will be
-`localhost` in combination with the random port):
+getting the correct Kafka bootstrap servers, utilizing both classes
+mentioned above:
 
 ```java
     private static K3aEmbedded kafka;

@@ -7,7 +7,6 @@ tests. No container runtime required.
 ## Limitations
 
 * Starts a single-node "cluster".
-* No Zookeeper. The server runs in KRaft mode.
 
 ## What it does
 

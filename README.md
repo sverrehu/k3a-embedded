@@ -22,7 +22,7 @@ To use this tool, add a dependency like the following:
     <dependency>
         <groupId>no.shhsoft</groupId>
         <artifactId>k3a-embedded</artifactId>
-        <version>0.2.1+${kafka.version}</version>
+        <version>0.5.0+${kafka.version}</version>
         <scope>test</scope>
     </dependency>
 ```
@@ -64,3 +64,46 @@ getting the correct Kafka bootstrap servers (the latter will be
 
 For an example of setting up SASL, please see [one of the integration
 tests](https://github.com/sverrehu/k3a-embedded/blob/main/src/test/java/no/shhsoft/k3aembedded/SaslK3aEmbeddedTest.java).
+
+## Using the Builder
+
+By default, the broker is started in KRaft mode as a combined broker
+and controller. If your testing requires use of ZooKeeper, you may
+disable KRaft mode with this Builder method:
+
+```java
+kraftMode(boolean kraftMode)
+```
+
+All network ports will be allocated at random, to avoid collisions
+when running multiple tests in parallell on the same system. If you
+need specific ports, you may use any of the following Builder methods:
+
+```java
+brokerPort(int brokerPort)
+controllerPort(int controllerPort)
+zooKeeperPort(int zooKeeperPort)
+```
+
+If you intend to set up additional listeners, you can request more
+random ports like this, giving the number of ports you need:
+
+```java
+additionalPorts(int numAdditionalPorts)
+```
+
+Then you can specify your listeners using this method, and a port
+index between `0` and `numAdditionalPorts - 1`:
+
+```java
+additionalListenerWithPortIndex(String name, String securityProtocol, int portIndex)
+```
+
+There's a similar method for adding a listener with a fixed port:
+
+```java
+additionalListenerWithFixedPort(String name, String securityProtocol, int port)
+```
+
+`additionalConfiguration(Map<String, Object> additionalConfiguration)`
+`additionalConfigurationProvider(AdditionalConfigurationProvider additionalConfigurationProvider)`

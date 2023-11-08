@@ -193,16 +193,16 @@ public final class K3aEmbedded {
         return zooKeeperPort;
     }
 
-    public int getAdditionalPort(final int index) {
-        return additionalPorts[index];
+    public int getAdditionalPort(final int portIndex) {
+        return additionalPorts[portIndex];
     }
 
     public String getBootstrapServers() {
         return "localhost:" + getBrokerPort();
     }
 
-    public String getBootstrapServersForAdditionalPort(final int index) {
-        return "localhost:" + additionalPorts[index];
+    public String getBootstrapServersForAdditionalPort(final int portIndex) {
+        return "localhost:" + additionalPorts[portIndex];
     }
 
     private HashMap<String, Object> getConfigMap() {

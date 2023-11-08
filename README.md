@@ -64,6 +64,23 @@ getting the correct Kafka bootstrap servers (the latter will be
 
 ## Using the Builder
 
+Use `K3aEmbedded.Builder` to get an instance of `K3aEmbedded`. In its
+simplest form with all defaults, it is invoked like this:
+
+```java
+new K3aEmbedded.Builder().build();
+```
+
+The following sections describe how to override the defaults using
+Builder methods. For instance, to disable KRaft mode (enable
+ZooKeeper) and specify a broker port, do something like this:
+
+```java
+new K3aEmbedded.Builder()
+    .kraftMode(false)
+    .brokerPort(9092)
+    .build();
+```
 
 ### Using ZooKeeper instead of KRaft Mode
 
@@ -77,8 +94,8 @@ kraftMode(boolean kraftMode)
 
 ### Specifying Non-random Ports
 
-All network ports will be allocated at random, to avoid collisions
-when running multiple tests in parallell on the same system. If you
+All network ports will be allocated at random to avoid collisions
+when running multiple tests in parallel on the same system. If you
 need specific ports, you may use any of the following Builder methods:
 
 ```java
@@ -115,5 +132,23 @@ tests](https://github.com/sverrehu/k3a-embedded/blob/main/src/test/java/no/shhso
 
 ### Adding Custom Broker Configuration
 
-`additionalConfiguration(Map<String, Object> additionalConfiguration)`
-`additionalConfigurationProvider(AdditionalConfigurationProvider additionalConfigurationProvider)`
+If you need to provide more detailed broker configuration than the
+default, the simplest method is to pass a configuration map to this
+builder method:
+
+```java
+additionalConfiguration(Map<String, Object> additionalConfiguration)
+```
+
+The map you provide will override or add to the default broker
+configuration.
+
+In the rare cases where your additional configuration relies on data
+not available until after the Builder has run, for instance if you
+need to know the value of a random port, you may pass an
+implementation of `AdditionalConfigurationProvider` to build your map
+after the `K3aEmbedded` object has been created:
+
+```java
+additionalConfigurationProvider(AdditionalConfigurationProvider additionalConfigurationProvider)
+```

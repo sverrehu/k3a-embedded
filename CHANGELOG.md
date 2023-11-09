@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.5.1](https://github.com/sverrehu/k3a-embedded/compare/v0.5.0...v0.5.1) (2023-11-09)
+
+
+### Documentation
+
+* add Javadoc ([#70](https://github.com/sverrehu/k3a-embedded/issues/70)) ([ef60140](https://github.com/sverrehu/k3a-embedded/commit/ef601407e8e86ec2191b76dfa6f76a17d4ac4fb7))
+* improve README ([#68](https://github.com/sverrehu/k3a-embedded/issues/68)) ([d797bc1](https://github.com/sverrehu/k3a-embedded/commit/d797bc1821df74e02198e3e4e2a8b4a136f8337e))
+
 ## [0.5.0](https://github.com/sverrehu/k3a-embedded/compare/v0.4.0...v0.5.0) (2023-11-06)
 
 

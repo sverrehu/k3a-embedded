@@ -55,36 +55,86 @@ public final class K3aEmbedded {
         private AdditionalConfigurationProvider additionalConfigurationProvider;
         private final List<AdditionalListener> additionalListeners = new ArrayList<>();
 
+        /**
+         * Builds a <code>K3aEmbedded</code> instance based on builder
+         * settings.
+         *
+         * @return a new <code>K3aEmbedded</code>.
+         */
         public K3aEmbedded build() {
             return new K3aEmbedded(kraftMode, brokerPort, controllerPort, zooKeeperPort, numAdditionalPorts,
                                    additionalConfiguration, additionalConfigurationProvider, additionalListeners);
         }
 
+        /**
+         * Specifies whether or not to use KRaft mode. The default is
+         * <code>true</code>. If <code>false</code> is specified, the
+         * resulting <code>K3aEmbedded</code> will spawn a ZooKeeper
+         * in addition to a broker.
+         *
+         * @param kraftMode whether or not to use KRaft mode
+         * @return <code>this</code>
+         */
         public Builder kraftMode(final boolean kraftMode) {
             this.kraftMode = kraftMode;
             return this;
         }
 
+        /**
+         * Assigns a fixed port to the broker listener. The default is
+         * to assign a random port to the broker.
+         *
+         * @param brokerPort the broker port
+         * @return <code>this</code>
+         */
         public Builder brokerPort(final int brokerPort) {
             this.brokerPort = validatePort(brokerPort);
             return this;
         }
 
+        /**
+         * Assigns a fixed port to the controller listener. The
+         * default is to assign a random port to the controller.
+         *
+         * @param controllerPort the controller port
+         * @return <code>this</code>
+         */
         public Builder controllerPort(final int controllerPort) {
             this.controllerPort = validatePort(controllerPort);
             return this;
         }
 
+        /**
+         * Assigns a fixed port to the controller ZooKeeper. The
+         * default is to assign a random port.
+         *
+         * @param zooKeeperPort the ZooKeeper port
+         * @return <code>this</code>
+         */
         public Builder zooKeeperPort(final int zooKeeperPort) {
             this.zooKeeperPort = validatePort(zooKeeperPort);
             return this;
         }
 
+        /**
+         * Allocates additional, random ports that may be used to set
+         * up extra listeners beyond the default.
+         *
+         * @param numAdditionalPorts number of extra ports to allocate
+         * @return <code>this</code>
+         */
         public Builder additionalPorts(final int numAdditionalPorts) {
             this.numAdditionalPorts = numAdditionalPorts;
             return this;
         }
 
+        /**
+         * Gives additional broker configuration options. The options
+         * will be added to or override the defaults.
+         *
+         * @param additionalConfiguration the confituration map
+         * @return <code>this</code>
+         */
         public Builder additionalConfiguration(final Map<String, Object> additionalConfiguration) {
             this.additionalConfiguration = additionalConfiguration;
             return this;

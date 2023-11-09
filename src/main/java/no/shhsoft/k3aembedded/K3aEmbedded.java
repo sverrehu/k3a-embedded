@@ -23,6 +23,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * A class that will run a Kafka broker, and optionally a ZooKeeper in
+ * the current VM. May be used for testing Kafka integration.
+ */
 public final class K3aEmbedded {
 
     private static final int NODE_ID = 1;
@@ -38,12 +42,26 @@ public final class K3aEmbedded {
     private final AdditionalConfigurationProvider additionalConfigurationProvider;
     private final List<AdditionalListener> additionalListeners;
 
+    /**
+     * Implementors of this interface may provide additional broker
+     * configuration. Will be called after all other configuration has
+     * been determined. Use {@code Builder.additionalConfigurationProvider} to
+     * set this up.
+     */
     public interface AdditionalConfigurationProvider {
 
+        /**
+         * @return a {@code Map} of Kafka broker configurations
+         *   that will be added to, or override the default
+         *   configuration
+         */
         Map<String, Object> getAdditionalConfiguration();
 
     }
 
+    /**
+     * Builder for {@code K3aEmbedded} instances.
+     */
     public static final class Builder {
 
         private boolean kraftMode = true;
@@ -55,52 +73,132 @@ public final class K3aEmbedded {
         private AdditionalConfigurationProvider additionalConfigurationProvider;
         private final List<AdditionalListener> additionalListeners = new ArrayList<>();
 
+        /**
+         * Builds a {@code K3aEmbedded} instance based on builder
+         * settings.
+         *
+         * @return a new {@code K3aEmbedded}.
+         */
         public K3aEmbedded build() {
             return new K3aEmbedded(kraftMode, brokerPort, controllerPort, zooKeeperPort, numAdditionalPorts,
                                    additionalConfiguration, additionalConfigurationProvider, additionalListeners);
         }
 
+        /**
+         * Specifies whether or not to use KRaft mode. The default is
+         * {@code true}. If {@code false} is specified, the
+         * resulting {@code K3aEmbedded} will spawn a ZooKeeper
+         * in addition to a broker.
+         *
+         * @param kraftMode whether or not to use KRaft mode
+         * @return {@code this}
+         */
         public Builder kraftMode(final boolean kraftMode) {
             this.kraftMode = kraftMode;
             return this;
         }
 
+        /**
+         * Assigns a fixed port to the broker listener. The default is
+         * to assign a random port to the broker.
+         *
+         * @param brokerPort the broker port
+         * @return {@code this}
+         */
         public Builder brokerPort(final int brokerPort) {
             this.brokerPort = validatePort(brokerPort);
             return this;
         }
 
+        /**
+         * Assigns a fixed port to the controller listener. The
+         * default is to assign a random port to the controller.
+         *
+         * @param controllerPort the controller port
+         * @return {@code this}
+         */
         public Builder controllerPort(final int controllerPort) {
             this.controllerPort = validatePort(controllerPort);
             return this;
         }
 
+        /**
+         * Assigns a fixed port to the controller ZooKeeper. The
+         * default is to assign a random port.
+         *
+         * @param zooKeeperPort the ZooKeeper port
+         * @return {@code this}
+         */
         public Builder zooKeeperPort(final int zooKeeperPort) {
             this.zooKeeperPort = validatePort(zooKeeperPort);
             return this;
         }
 
+        /**
+         * Allocates additional, random ports that may be used to set
+         * up extra listeners beyond the default.
+         *
+         * @param numAdditionalPorts number of extra ports to allocate
+         * @return {@code this}
+         */
         public Builder additionalPorts(final int numAdditionalPorts) {
             this.numAdditionalPorts = numAdditionalPorts;
             return this;
         }
 
+        /**
+         * Gives additional broker configuration options. The options
+         * will be added to, or override the defaults.
+         *
+         * @param additionalConfiguration the configuration map
+         * @return {@code this}
+         */
         public Builder additionalConfiguration(final Map<String, Object> additionalConfiguration) {
             this.additionalConfiguration = additionalConfiguration;
             return this;
         }
 
+        /**
+         * Adds an extra listener.
+         *
+         * @param name the listener name
+         * @param securityProtocol the security protocol of the listener
+         * @param port the (fixed) port the listener binds to
+         * @return {@code this}
+         */
         public Builder additionalListenerWithFixedPort(final String name, final String securityProtocol, final int port) {
             additionalListeners.add(new AdditionalListener(name, securityProtocol, validatePort(port)));
             return this;
         }
 
+        /**
+         * Adds an extra listener bound to a random port. Requires
+         * that additional random ports have been allocated through
+         * the {@code additionalPorts} method.
+         *
+         * @param name the listener name
+         * @param securityProtocol the security protocol of the listener
+         * @param portIndex an index between {@code 0} and {@code additionalPorts - 1}
+         * @return {@code this}
+         */
         public Builder additionalListenerWithPortIndex(final String name, final String securityProtocol, final int portIndex) {
             additionalListeners.add(new AdditionalListener(name, securityProtocol, -portIndex));
             return this;
         }
 
+        /**
+         * Sets up an {@code AdditionalConfigurationProvider}
+         * that will be called after every other configuration has
+         * been settled. Not often needed, except in cases where the
+         * additional configuration relies on the random ports.
+         *
+         * @param additionalConfigurationProvider the {@code AdditionalConfigurationProvider}
+         * @return {@code this}
+         */
         public Builder additionalConfigurationProvider(final AdditionalConfigurationProvider additionalConfigurationProvider) {
+            if (this.additionalConfigurationProvider != null) {
+                throw new RuntimeException("Only one AdditionalConfigurationProvider may be set up");
+            }
             this.additionalConfigurationProvider = additionalConfigurationProvider;
             return this;
         }
@@ -147,6 +245,11 @@ public final class K3aEmbedded {
         }
     }
 
+    /**
+     * Starts the Kafka broker according to specification from the
+     * {@code Builder}. If KRaft mode is disabled, also starts a
+     * ZooKeeper.
+     */
     public void start() {
         if (server != null) {
             throw new RuntimeException("Server already started");
@@ -166,6 +269,9 @@ public final class K3aEmbedded {
         server.startup();
     }
 
+    /**
+     * Stops the running Kafka broker (and ZooKeeper, if enabled).
+     */
     public void stop() {
         if (server == null) {
             return;
@@ -181,26 +287,57 @@ public final class K3aEmbedded {
         }
     }
 
+    /**
+     * @return the port the broker listener is bound to
+     */
     public int getBrokerPort() {
         return brokerPort;
     }
 
+    /**
+     * @return the port the controller listener is bound to
+     */
     public int getControllerPort() {
         return controllerPort;
     }
 
+    /**
+     * @return the port the ZooKeeper listens to
+     */
     public int getZooKeeperPort() {
         return zooKeeperPort;
     }
 
+    /**
+     * Determines the real port value for one of the additional,
+     * random ports allocated through
+     * {@code Builder.additionalPorts}.
+     *
+     * @param portIndex the index into the additional ports array
+     *   ({@code 0} to {@code additionalPorts - 1})
+     * @return the actual port
+     */
     public int getAdditionalPort(final int portIndex) {
         return additionalPorts[portIndex];
     }
 
+    /**
+     * @return the boostrap servers string clients are supposed to
+     *   use when connecting to the default broker listener
+     */
     public String getBootstrapServers() {
         return "localhost:" + getBrokerPort();
     }
 
+    /**
+     * Determines the bootstrap server string for one of the
+     * additional listeners.
+     *
+     * @param portIndex the index into the additional ports array
+     *   ({@code 0} to {@code additionalPorts - 1})
+     * @return the boostrap servers string clients are supposed to
+     *   use when connecting to the listener on the given port
+     */
     public String getBootstrapServersForAdditionalPort(final int portIndex) {
         return "localhost:" + additionalPorts[portIndex];
     }

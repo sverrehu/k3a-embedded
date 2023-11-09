@@ -23,6 +23,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * A class that will run a Kafka broker, and optionally a ZooKeeper in
+ * the current VM. May be used for testing Kafka integration.
+ */
 public final class K3aEmbedded {
 
     private static final int NODE_ID = 1;
@@ -38,12 +42,27 @@ public final class K3aEmbedded {
     private final AdditionalConfigurationProvider additionalConfigurationProvider;
     private final List<AdditionalListener> additionalListeners;
 
+    /**
+     * Implementors of this interface may provide additional broker
+     * configuration. Will be called after all other configuration has
+     * been determined. Use
+     * <code>Builder.additionalConfigurationProvider</code> to set
+     * this up.
+     */
     public interface AdditionalConfigurationProvider {
 
+        /**
+         * @return a <code>Map</code> of Kafka broker configurations
+         *   that will be added to, or override the default
+         *   configuration
+         */
         Map<String, Object> getAdditionalConfiguration();
 
     }
 
+    /**
+     * Builder for <code>K3aEmbedded</code> instances.
+     */
     public static final class Builder {
 
         private boolean kraftMode = true;
@@ -178,6 +197,9 @@ public final class K3aEmbedded {
          * @return <code>this</code>
          */
         public Builder additionalConfigurationProvider(final AdditionalConfigurationProvider additionalConfigurationProvider) {
+            if (this.additionalConfigurationProvider != null) {
+                throw new RuntimeException("Only one AdditionalConfigurationProvider may be set up");
+            }
             this.additionalConfigurationProvider = additionalConfigurationProvider;
             return this;
         }
@@ -224,6 +246,11 @@ public final class K3aEmbedded {
         }
     }
 
+    /**
+     * Starts the Kafka broker according to specification from the
+     * <code>Builder</code>. If KRaft mode is disabled, also starts a
+     * ZooKeeper.
+     */
     public void start() {
         if (server != null) {
             throw new RuntimeException("Server already started");
@@ -243,6 +270,9 @@ public final class K3aEmbedded {
         server.startup();
     }
 
+    /**
+     * Stops the running Kafka broker (and ZooKeeper, if enabled).
+     */
     public void stop() {
         if (server == null) {
             return;
@@ -258,26 +288,57 @@ public final class K3aEmbedded {
         }
     }
 
+    /**
+     * @return the port the broker listener is bound to
+     */
     public int getBrokerPort() {
         return brokerPort;
     }
 
+    /**
+     * @return the port the controller listener is bound to
+     */
     public int getControllerPort() {
         return controllerPort;
     }
 
+    /**
+     * @return the port the ZooKeeper listens to
+     */
     public int getZooKeeperPort() {
         return zooKeeperPort;
     }
 
+    /**
+     * Determines the real port value for one of the additional,
+     * random ports allocated through
+     * <code>Builder.additionalPorts</code>.
+     *
+     * @param portIndex the index into the additional ports array
+     *   (<code>0</code> to <code>additionalPorts - 1</code>)
+     * @return the actual port
+     */
     public int getAdditionalPort(final int portIndex) {
         return additionalPorts[portIndex];
     }
 
+    /**
+     * @return the boostrap servers string clients are supposed to
+     *   use when connecting to the default broker listener
+     */
     public String getBootstrapServers() {
         return "localhost:" + getBrokerPort();
     }
 
+    /**
+     * Determines the bootstrap server string for one of the
+     * additional listeners.
+     *
+     * @param portIndex the index into the additional ports array
+     *   (<code>0</code> to <code>additionalPorts - 1</code>)
+     * @return the boostrap servers string clients are supposed to
+     *   use when connecting to the listener on the given port
+     */
     public String getBootstrapServersForAdditionalPort(final int portIndex) {
         return "localhost:" + additionalPorts[portIndex];
     }

@@ -130,9 +130,9 @@ public final class K3aEmbedded {
 
         /**
          * Gives additional broker configuration options. The options
-         * will be added to or override the defaults.
+         * will be added to, or override the defaults.
          *
-         * @param additionalConfiguration the confituration map
+         * @param additionalConfiguration the configuration map
          * @return <code>this</code>
          */
         public Builder additionalConfiguration(final Map<String, Object> additionalConfiguration) {
@@ -140,16 +140,43 @@ public final class K3aEmbedded {
             return this;
         }
 
+        /**
+         * Adds an extra listener.
+         *
+         * @param name the listener name
+         * @param securityProtocol the security protocol of the listener
+         * @param port the (fixed) port the listener binds to
+         * @return <code>this</code>
+         */
         public Builder additionalListenerWithFixedPort(final String name, final String securityProtocol, final int port) {
             additionalListeners.add(new AdditionalListener(name, securityProtocol, validatePort(port)));
             return this;
         }
 
+        /**
+         * Adds an extra listener bound to a random port. Requires
+         * that additional random ports have been allocated through
+         * the <code>additionalPorts</code> method.
+         *
+         * @param name the listener name
+         * @param securityProtocol the security protocol of the listener
+         * @param portIndex an index between <code>0</code> and <code>additionalPorts - 1</code>
+         * @return <code>this</code>
+         */
         public Builder additionalListenerWithPortIndex(final String name, final String securityProtocol, final int portIndex) {
             additionalListeners.add(new AdditionalListener(name, securityProtocol, -portIndex));
             return this;
         }
 
+        /**
+         * Sets up an <code>AdditionalConfigurationProvider</code>
+         * that will be called after every other configuration has
+         * been settled. Not often needed, except in cases where the
+         * additional configuration relies on the random ports.
+         *
+         * @param additionalConfigurationProvider the <code>AdditionalConfigurationProvider</code>
+         * @return <code>this</code>
+         */
         public Builder additionalConfigurationProvider(final AdditionalConfigurationProvider additionalConfigurationProvider) {
             this.additionalConfigurationProvider = additionalConfigurationProvider;
             return this;

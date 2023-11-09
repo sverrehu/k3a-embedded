@@ -11,6 +11,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /* Inspired by / stolen from org.springframework.kafka.test.utils.KafkaTestUtils */
+
+/**
+ * Helper methods for writing tests using {@link K3aEmbedded}.
+ */
 public final class K3aTestUtils {
 
     private K3aTestUtils() {
@@ -18,6 +22,7 @@ public final class K3aTestUtils {
 
     /**
      * Set up test properties for an {@code <Integer, String>} consumer.
+     *
      * @param group the group id.
      * @param autoCommit the auto commit.
      * @param k3aEmbedded a {@link K3aEmbedded} instance.
@@ -29,6 +34,7 @@ public final class K3aTestUtils {
 
     /**
      * Set up test properties for an {@code <Integer, String>} producer.
+     *
      * @param k3aEmbedded a {@link K3aEmbedded} instance.
      * @return the properties.
      */
@@ -38,6 +44,7 @@ public final class K3aTestUtils {
 
     /**
      * Set up test properties for admin client.
+     *
      * @param k3aEmbedded a {@link K3aEmbedded} instance.
      * @return the properties.
      */
@@ -47,6 +54,7 @@ public final class K3aTestUtils {
 
     /**
      * Set up test properties for an {@code <Integer, String>} consumer.
+     *
      * @param bootstrapServers the bootstrapServers property.
      * @param group the group id.
      * @param autoCommit the auto commit.
@@ -66,6 +74,7 @@ public final class K3aTestUtils {
 
     /**
      * Set up test properties for an {@code <Integer, String>} producer.
+     *
      * @param bootstrapServers the bootstrapServers property.
      * @return the properties.
      */
@@ -84,6 +93,7 @@ public final class K3aTestUtils {
 
     /**
      * Set up test properties for an admin client.
+     *
      * @param bootstrapServers the bootstrapServers property.
      * @return the properties.
      */

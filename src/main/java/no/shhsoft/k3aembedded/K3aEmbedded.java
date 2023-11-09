@@ -46,13 +46,13 @@ public final class K3aEmbedded {
      * Implementors of this interface may provide additional broker
      * configuration. Will be called after all other configuration has
      * been determined. Use
-     * <code>Builder.additionalConfigurationProvider</code> to set
+     * {@code Builder.additionalConfigurationProvider} to set
      * this up.
      */
     public interface AdditionalConfigurationProvider {
 
         /**
-         * @return a <code>Map</code> of Kafka broker configurations
+         * @return a {@code Map} of Kafka broker configurations
          *   that will be added to, or override the default
          *   configuration
          */
@@ -61,7 +61,7 @@ public final class K3aEmbedded {
     }
 
     /**
-     * Builder for <code>K3aEmbedded</code> instances.
+     * Builder for {@code K3aEmbedded} instances.
      */
     public static final class Builder {
 
@@ -75,10 +75,10 @@ public final class K3aEmbedded {
         private final List<AdditionalListener> additionalListeners = new ArrayList<>();
 
         /**
-         * Builds a <code>K3aEmbedded</code> instance based on builder
+         * Builds a {@code K3aEmbedded} instance based on builder
          * settings.
          *
-         * @return a new <code>K3aEmbedded</code>.
+         * @return a new {@code K3aEmbedded}.
          */
         public K3aEmbedded build() {
             return new K3aEmbedded(kraftMode, brokerPort, controllerPort, zooKeeperPort, numAdditionalPorts,
@@ -87,12 +87,12 @@ public final class K3aEmbedded {
 
         /**
          * Specifies whether or not to use KRaft mode. The default is
-         * <code>true</code>. If <code>false</code> is specified, the
-         * resulting <code>K3aEmbedded</code> will spawn a ZooKeeper
+         * {@code true}. If {@code false} is specified, the
+         * resulting {@code K3aEmbedded} will spawn a ZooKeeper
          * in addition to a broker.
          *
          * @param kraftMode whether or not to use KRaft mode
-         * @return <code>this</code>
+         * @return {@code this}
          */
         public Builder kraftMode(final boolean kraftMode) {
             this.kraftMode = kraftMode;
@@ -104,7 +104,7 @@ public final class K3aEmbedded {
          * to assign a random port to the broker.
          *
          * @param brokerPort the broker port
-         * @return <code>this</code>
+         * @return {@code this}
          */
         public Builder brokerPort(final int brokerPort) {
             this.brokerPort = validatePort(brokerPort);
@@ -116,7 +116,7 @@ public final class K3aEmbedded {
          * default is to assign a random port to the controller.
          *
          * @param controllerPort the controller port
-         * @return <code>this</code>
+         * @return {@code this}
          */
         public Builder controllerPort(final int controllerPort) {
             this.controllerPort = validatePort(controllerPort);
@@ -128,7 +128,7 @@ public final class K3aEmbedded {
          * default is to assign a random port.
          *
          * @param zooKeeperPort the ZooKeeper port
-         * @return <code>this</code>
+         * @return {@code this}
          */
         public Builder zooKeeperPort(final int zooKeeperPort) {
             this.zooKeeperPort = validatePort(zooKeeperPort);
@@ -140,7 +140,7 @@ public final class K3aEmbedded {
          * up extra listeners beyond the default.
          *
          * @param numAdditionalPorts number of extra ports to allocate
-         * @return <code>this</code>
+         * @return {@code this}
          */
         public Builder additionalPorts(final int numAdditionalPorts) {
             this.numAdditionalPorts = numAdditionalPorts;
@@ -152,7 +152,7 @@ public final class K3aEmbedded {
          * will be added to, or override the defaults.
          *
          * @param additionalConfiguration the configuration map
-         * @return <code>this</code>
+         * @return {@code this}
          */
         public Builder additionalConfiguration(final Map<String, Object> additionalConfiguration) {
             this.additionalConfiguration = additionalConfiguration;
@@ -165,7 +165,7 @@ public final class K3aEmbedded {
          * @param name the listener name
          * @param securityProtocol the security protocol of the listener
          * @param port the (fixed) port the listener binds to
-         * @return <code>this</code>
+         * @return {@code this}
          */
         public Builder additionalListenerWithFixedPort(final String name, final String securityProtocol, final int port) {
             additionalListeners.add(new AdditionalListener(name, securityProtocol, validatePort(port)));
@@ -175,12 +175,12 @@ public final class K3aEmbedded {
         /**
          * Adds an extra listener bound to a random port. Requires
          * that additional random ports have been allocated through
-         * the <code>additionalPorts</code> method.
+         * the {@code additionalPorts} method.
          *
          * @param name the listener name
          * @param securityProtocol the security protocol of the listener
-         * @param portIndex an index between <code>0</code> and <code>additionalPorts - 1</code>
-         * @return <code>this</code>
+         * @param portIndex an index between {@code 0} and {@code additionalPorts - 1}
+         * @return {@code this}
          */
         public Builder additionalListenerWithPortIndex(final String name, final String securityProtocol, final int portIndex) {
             additionalListeners.add(new AdditionalListener(name, securityProtocol, -portIndex));
@@ -188,13 +188,13 @@ public final class K3aEmbedded {
         }
 
         /**
-         * Sets up an <code>AdditionalConfigurationProvider</code>
+         * Sets up an {@code AdditionalConfigurationProvider}
          * that will be called after every other configuration has
          * been settled. Not often needed, except in cases where the
          * additional configuration relies on the random ports.
          *
-         * @param additionalConfigurationProvider the <code>AdditionalConfigurationProvider</code>
-         * @return <code>this</code>
+         * @param additionalConfigurationProvider the {@code AdditionalConfigurationProvider}
+         * @return {@code this}
          */
         public Builder additionalConfigurationProvider(final AdditionalConfigurationProvider additionalConfigurationProvider) {
             if (this.additionalConfigurationProvider != null) {
@@ -248,7 +248,7 @@ public final class K3aEmbedded {
 
     /**
      * Starts the Kafka broker according to specification from the
-     * <code>Builder</code>. If KRaft mode is disabled, also starts a
+     * {@code Builder}. If KRaft mode is disabled, also starts a
      * ZooKeeper.
      */
     public void start() {
@@ -312,10 +312,10 @@ public final class K3aEmbedded {
     /**
      * Determines the real port value for one of the additional,
      * random ports allocated through
-     * <code>Builder.additionalPorts</code>.
+     * {@code Builder.additionalPorts}.
      *
      * @param portIndex the index into the additional ports array
-     *   (<code>0</code> to <code>additionalPorts - 1</code>)
+     *   ({@code 0} to {@code additionalPorts - 1})
      * @return the actual port
      */
     public int getAdditionalPort(final int portIndex) {
@@ -335,7 +335,7 @@ public final class K3aEmbedded {
      * additional listeners.
      *
      * @param portIndex the index into the additional ports array
-     *   (<code>0</code> to <code>additionalPorts - 1</code>)
+     *   ({@code 0} to {@code additionalPorts - 1})
      * @return the boostrap servers string clients are supposed to
      *   use when connecting to the listener on the given port
      */

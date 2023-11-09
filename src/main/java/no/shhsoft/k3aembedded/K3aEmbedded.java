@@ -45,9 +45,8 @@ public final class K3aEmbedded {
     /**
      * Implementors of this interface may provide additional broker
      * configuration. Will be called after all other configuration has
-     * been determined. Use
-     * {@code Builder.additionalConfigurationProvider} to set
-     * this up.
+     * been determined. Use {@codeBuilder.additionalConfigurationProvider} to
+     * set this up.
      */
     public interface AdditionalConfigurationProvider {
 

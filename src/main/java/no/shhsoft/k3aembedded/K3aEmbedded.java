@@ -85,12 +85,12 @@ public final class K3aEmbedded {
         }
 
         /**
-         * Specifies whether or not to use KRaft mode. The default is
+         * Specifies whether to use KRaft mode. The default is
          * {@code true}. If {@code false} is specified, the
          * resulting {@code K3aEmbedded} will spawn a ZooKeeper
          * in addition to a broker.
          *
-         * @param kraftMode whether or not to use KRaft mode
+         * @param kraftMode whether to use KRaft mode
          * @return {@code this}
          */
         public Builder kraftMode(final boolean kraftMode) {

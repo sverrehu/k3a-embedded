@@ -22,7 +22,7 @@ To use this tool, add a dependency like the following:
     <dependency>
         <groupId>no.shhsoft</groupId>
         <artifactId>k3a-embedded</artifactId>
-        <version>0.5.0+${kafka.version}</version>
+        <version>0.5.3+${kafka.version}</version>
         <scope>test</scope>
     </dependency>
 ```
@@ -34,6 +34,8 @@ match.
 
 The following Kafka versions are supported at the moment:
 
+* 3.7.0
+* 3.6.1
 * 3.6.0
 * 3.5.1
 

@@ -3,7 +3,6 @@ package no.shhsoft.k3aembedded;
 import kafka.server.KafkaConfig;
 import kafka.server.KafkaRaftServer;
 import kafka.server.KafkaServer;
-import kafka.server.MetaProperties;
 import kafka.server.Server;
 import kafka.tools.StorageTool;
 import org.apache.kafka.common.Uuid;
@@ -16,6 +15,8 @@ import scala.collection.immutable.Seq;
 import scala.collection.mutable.ArrayBuffer;
 import scala.jdk.CollectionConverters;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -417,11 +418,26 @@ public final class K3aEmbedded {
             throw new RuntimeException("No log directory. This should not happen.");
         }
         final String clusterId = Uuid.randomUuid().toString();
-        final MetadataVersion metadataVersion = MetadataVersion.latest();
-        final MetaProperties metaProperties = StorageTool.buildMetadataProperties(clusterId, kafkaConfig);
+        final MetadataVersion metadataVersion = findMetadataVersion();
+        /* Use var for MetaProperties, since the class was moved between 3.6 and 3.7. */
+        final var metaProperties = StorageTool.buildMetadataProperties(clusterId, kafkaConfig);
         final BootstrapMetadata bootstrapMetadata = StorageTool.buildBootstrapMetadata(metadataVersion, Option.<ArrayBuffer<ApiMessageAndVersion>>empty(), "format command");
         final Seq<String> seq = CollectionConverters.ListHasAsScala(Collections.singletonList(logDirectory.toString())).asScala().toList().toSeq();
         StorageTool.formatCommand(System.out, seq, metaProperties, bootstrapMetadata, metadataVersion, false);
+    }
+
+    private static MetadataVersion findMetadataVersion() {
+        final String[] candidateMethods = new String[] { "latestProduction", "latest" };
+        Exception lastException = null;
+        for (final String candidateMethod : candidateMethods) {
+            try {
+                final Method latestVersionMethod = MetadataVersion.class.getMethod(candidateMethod);
+                return (MetadataVersion) latestVersionMethod.invoke(null);
+            } catch (final NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                lastException = e;
+            }
+        }
+        throw new RuntimeException("Unable to find or call method returning latest MetadataVersion", lastException);
     }
 
 }

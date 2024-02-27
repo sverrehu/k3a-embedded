@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.3](https://github.com/sverrehu/k3a-embedded/compare/v0.5.2...v0.5.3) (2024-02-27)
+
+
+### Bug Fixes
+
+* **deps:** update kafka.version to v3.7.0 ([#89](https://github.com/sverrehu/k3a-embedded/issues/89)) ([51a40d9](https://github.com/sverrehu/k3a-embedded/commit/51a40d95f18ee10ad244a2d894a3b909ffd1cf9d))
+
 ## [0.5.2](https://github.com/sverrehu/k3a-embedded/compare/v0.5.1...v0.5.2) (2023-12-05)
 
 

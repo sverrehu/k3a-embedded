@@ -396,7 +396,7 @@ public final class K3aEmbedded {
         }
         if (kraftMode && additionalConfiguration.containsKey("node.id")
             && !map.get("node.id").toString().equals(additionalConfiguration.get("node.id").toString())) {
-            throw new RuntimeException("node.id cannot be overriden");
+            throw new RuntimeException("node.id cannot be overridden");
         }
         map.putAll(additionalConfiguration);
     }

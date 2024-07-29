@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.5](https://github.com/sverrehu/k3a-embedded/compare/v0.5.4...v0.5.5) (2024-07-29)
+
+
+### Bug Fixes
+
+* use correct release-please ([#115](https://github.com/sverrehu/k3a-embedded/issues/115)) ([7bd6be0](https://github.com/sverrehu/k3a-embedded/commit/7bd6be0cbbdf4c3a79f98810ea9d0b2f79ce42c5))
+
 ## [0.5.4](https://github.com/sverrehu/k3a-embedded/compare/v0.5.3...v0.5.4) (2024-07-01)
 
 

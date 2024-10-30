@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.5.6](https://github.com/sverrehu/k3a-embedded/compare/v0.5.5...v0.5.6) (2024-10-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.apache.zookeeper:zookeeper to v3.9.3 ([#132](https://github.com/sverrehu/k3a-embedded/issues/132)) ([d425b30](https://github.com/sverrehu/k3a-embedded/commit/d425b30eb4c8b9c79d340e73328b132adba43a69))
+* upgrade Kafka to 3.8.1 ([#135](https://github.com/sverrehu/k3a-embedded/issues/135)) ([8578f37](https://github.com/sverrehu/k3a-embedded/commit/8578f373a0d679774364b010efd97439c303185c))
+
 ## [0.5.5](https://github.com/sverrehu/k3a-embedded/compare/v0.5.4...v0.5.5) (2024-07-29)
 
 

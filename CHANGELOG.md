@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.8](https://github.com/sverrehu/k3a-embedded/compare/v0.5.7...v0.5.8) (2024-11-11)
+
+
+### Bug Fixes
+
+* make sure property values are strings ([71e08fd](https://github.com/sverrehu/k3a-embedded/commit/71e08fd6a361bd8ec9ce810cb9cd9ffa97877957))
+
 ## [0.5.7](https://github.com/sverrehu/k3a-embedded/compare/v0.5.6...v0.5.7) (2024-11-11)
 
 

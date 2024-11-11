@@ -7,22 +7,17 @@ import kafka.server.Server;
 import kafka.tools.StorageTool;
 import org.apache.kafka.common.Uuid;
 import org.apache.kafka.common.utils.Time;
-import org.apache.kafka.metadata.bootstrap.BootstrapMetadata;
-import org.apache.kafka.server.common.ApiMessageAndVersion;
-import org.apache.kafka.server.common.MetadataVersion;
 import scala.Option;
-import scala.collection.immutable.Seq;
-import scala.collection.mutable.ArrayBuffer;
-import scala.jdk.CollectionConverters;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * A class that will run a Kafka broker, and optionally a ZooKeeper in
@@ -262,7 +257,8 @@ public final class K3aEmbedded {
         final Map<String, Object> map = getConfigMap();
         final KafkaConfig config = new KafkaConfig(map);
         if (kraftMode) {
-            formatKafkaLogDirectory(config);
+            final String clusterId = Uuid.randomUuid().toString();
+            runStorageToolFormat(map, clusterId);
             server = new KafkaRaftServer(config, Time.SYSTEM);
         } else {
             server = new KafkaServer(config, Time.SYSTEM, Option.empty(), false);
@@ -407,37 +403,23 @@ public final class K3aEmbedded {
         return FileUtils.createTempDirectory("kafka");
     }
 
-    private void formatKafkaLogDirectory(final KafkaConfig kafkaConfig) {
-        /* This is to mimic the command line formatting of the log directory,
-         * which is required when KRaft mode is used. Easiest approach would be to
-         * call StorageTool.main with the correct command line arguments, but
-         * unfortunately the main method does an explicit exit at the end.
-         * So this is the second best: Mimic what StorageTool.main does for
-         * the "format" command. */
-        if (logDirectory == null) {
-            throw new RuntimeException("No log directory. This should not happen.");
-        }
-        final String clusterId = Uuid.randomUuid().toString();
-        final MetadataVersion metadataVersion = findMetadataVersion();
-        /* Use var for MetaProperties, since the class was moved between 3.6 and 3.7. */
-        final var metaProperties = StorageTool.buildMetadataProperties(clusterId, kafkaConfig);
-        final BootstrapMetadata bootstrapMetadata = StorageTool.buildBootstrapMetadata(metadataVersion, Option.<ArrayBuffer<ApiMessageAndVersion>>empty(), "format command");
-        final Seq<String> seq = CollectionConverters.ListHasAsScala(Collections.singletonList(logDirectory.toString())).asScala().toList().toSeq();
-        StorageTool.formatCommand(System.out, seq, metaProperties, bootstrapMetadata, metadataVersion, false);
+    private void runStorageToolFormat(final Map<String, Object> config, final String clusterId) {
+        FileUtils.execClass(StorageTool.class, "format", "--config", writeConfigToFile(config), "--cluster-id", clusterId);
     }
 
-    private static MetadataVersion findMetadataVersion() {
-        final String[] candidateMethods = new String[] { "latestProduction", "latest" };
-        Exception lastException = null;
-        for (final String candidateMethod : candidateMethods) {
-            try {
-                final Method latestVersionMethod = MetadataVersion.class.getMethod(candidateMethod);
-                return (MetadataVersion) latestVersionMethod.invoke(null);
-            } catch (final NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-                lastException = e;
-            }
+    private static String writeConfigToFile(final Map<String, Object> config) {
+        try {
+            final File tempFile = File.createTempFile("kafka", "properties");
+            tempFile.deleteOnExit();
+            final Properties properties = new Properties();
+            properties.putAll(config);
+            final FileWriter writer = new FileWriter(tempFile);
+            properties.store(writer, null);
+            writer.close();
+            return tempFile.getPath();
+        } catch (final IOException e) {
+            throw new RuntimeException(e);
         }
-        throw new RuntimeException("Unable to find or call method returning latest MetadataVersion", lastException);
     }
 
 }

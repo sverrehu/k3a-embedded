@@ -412,7 +412,9 @@ public final class K3aEmbedded {
             final File tempFile = File.createTempFile("kafka", "properties");
             tempFile.deleteOnExit();
             final Properties properties = new Properties();
-            properties.putAll(config);
+            for (final Map.Entry<String, Object> entry : config.entrySet()) {
+                properties.put(entry.getKey(), entry.getValue().toString());
+            }
             final FileWriter writer = new FileWriter(tempFile);
             properties.store(writer, null);
             writer.close();

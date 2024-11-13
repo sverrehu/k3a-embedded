@@ -26,10 +26,11 @@ import java.util.Properties;
 public final class K3aEmbedded {
 
     private static final int NODE_ID = 1;
-    private Server server;
+    private Server[] servers;
     private Path logDirectory;
     private ZooKeeper zooKeeper;
     private final boolean kraftMode;
+    private final int numBrokers;
     private final int brokerPort;
     private final int controllerPort;
     private final int zooKeeperPort;
@@ -61,6 +62,7 @@ public final class K3aEmbedded {
     public static final class Builder {
 
         private boolean kraftMode = true;
+        private int numBrokers = 1;
         private int brokerPort = -1;
         private int controllerPort = -1;
         private int zooKeeperPort = -1;
@@ -76,7 +78,7 @@ public final class K3aEmbedded {
          * @return a new {@code K3aEmbedded}.
          */
         public K3aEmbedded build() {
-            return new K3aEmbedded(kraftMode, brokerPort, controllerPort, zooKeeperPort, numAdditionalPorts,
+            return new K3aEmbedded(kraftMode, numBrokers, brokerPort, controllerPort, zooKeeperPort, numAdditionalPorts,
                                    additionalConfiguration, additionalConfigurationProvider, additionalListeners);
         }
 
@@ -91,6 +93,11 @@ public final class K3aEmbedded {
          */
         public Builder kraftMode(final boolean kraftMode) {
             this.kraftMode = kraftMode;
+            return this;
+        }
+
+        public Builder numBrokers(final int numBrokers) {
+            this.numBrokers = numBrokers;
             return this;
         }
 
@@ -222,10 +229,11 @@ public final class K3aEmbedded {
 
     }
 
-    private K3aEmbedded(final boolean kraftMode, final int brokerPort, final int controllerPort, final int zooKeeperPort, final int numAdditionalPorts,
+    private K3aEmbedded(final boolean kraftMode, final int numBrokers, final int brokerPort, final int controllerPort, final int zooKeeperPort, final int numAdditionalPorts,
                         final Map<String, Object> additionalConfiguration, final AdditionalConfigurationProvider additionalConfigurationProvider,
                         final List<AdditionalListener> additionalListeners) {
         this.kraftMode = kraftMode;
+        this.numBrokers = numBrokers;
         this.brokerPort = brokerPort > 0 ? brokerPort : NetworkUtils.getRandomAvailablePort();
         this.controllerPort = controllerPort > 0 ? controllerPort : NetworkUtils.getRandomAvailablePort();
         this.zooKeeperPort = zooKeeperPort > 0 ? zooKeeperPort : NetworkUtils.getRandomAvailablePort();
@@ -247,35 +255,40 @@ public final class K3aEmbedded {
      * ZooKeeper.
      */
     public void start() {
-        if (server != null) {
-            throw new RuntimeException("Server already started");
+        if (servers != null) {
+            throw new RuntimeException("Server(s) already started");
         }
         if (!kraftMode) {
             zooKeeper.start();
         }
-        logDirectory = createKafkaLogDirectory();
-        final Map<String, Object> map = getConfigMap();
-        final KafkaConfig config = new KafkaConfig(map);
-        if (kraftMode) {
-            final String clusterId = Uuid.randomUuid().toString();
-            runStorageToolFormat(map, clusterId);
-            server = new KafkaRaftServer(config, Time.SYSTEM);
-        } else {
-            server = new KafkaServer(config, Time.SYSTEM, Option.empty(), false);
+        servers = new Server[numBrokers];
+        for (int serverIndex = 0; serverIndex < servers.length; serverIndex++) {
+            logDirectory = createKafkaLogDirectory();
+            final Map<String, Object> map = getConfigMap();
+            final KafkaConfig config = new KafkaConfig(map);
+            if (kraftMode) {
+                final String clusterId = Uuid.randomUuid().toString();
+                runStorageToolFormat(map, clusterId);
+                servers[serverIndex] = new KafkaRaftServer(config, Time.SYSTEM);
+            } else {
+                servers[serverIndex] = new KafkaServer(config, Time.SYSTEM, Option.empty(), false);
+            }
+            servers[serverIndex].startup();
         }
-        server.startup();
     }
 
     /**
-     * Stops the running Kafka broker (and ZooKeeper, if enabled).
+     * Stops the running Kafka brokers (and ZooKeeper, if enabled).
      */
     public void stop() {
-        if (server == null) {
+        if (servers == null) {
             return;
         }
-        server.shutdown();
-        server.awaitShutdown();
-        server = null;
+        for (int serverIndex = 0; serverIndex < servers.length; serverIndex++) {
+            servers[serverIndex].shutdown();
+            servers[serverIndex].awaitShutdown();
+        }
+        servers = null;
         FileUtils.deleteRecursively(logDirectory.toFile());
         logDirectory = null;
         if (!kraftMode) {

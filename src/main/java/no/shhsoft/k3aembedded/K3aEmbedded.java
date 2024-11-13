@@ -20,12 +20,12 @@ import java.util.Map;
 import java.util.Properties;
 
 /**
- * A class that will run a Kafka broker, and optionally a ZooKeeper in
+ * A class that will run one or more Kafka brokers, and optionally a ZooKeeper in
  * the current VM. May be used for testing Kafka integration.
  */
 public final class K3aEmbedded {
 
-    private static final int NODE_ID = 1;
+    private static final int BASE_NODE_ID = 1;
     private Server[] servers;
     private Path logDirectory;
     private ZooKeeper zooKeeper;
@@ -336,7 +336,14 @@ public final class K3aEmbedded {
      *   use when connecting to the default broker listener
      */
     public String getBootstrapServers() {
-        return "localhost:" + getBrokerPort();
+        final StringBuilder sb = new StringBuilder();
+        for (int serverIndex = 0; serverIndex < numBrokers; serverIndex++) {
+            if (sb.length() > 0) {
+                sb.append(",");
+            }
+            sb.append("localhost:" + (getBrokerPort() + serverIndex));
+        }
+        return sb.toString();
     }
 
     /**
@@ -349,21 +356,28 @@ public final class K3aEmbedded {
      *   use when connecting to the listener on the given port
      */
     public String getBootstrapServersForAdditionalPort(final int portIndex) {
-        return "localhost:" + additionalPorts[portIndex];
+        final StringBuilder sb = new StringBuilder();
+        for (int serverIndex = 0; serverIndex < numBrokers; serverIndex++) {
+            if (sb.length() > 0) {
+                sb.append(",");
+            }
+            sb.append("localhost:" + (additionalPorts[portIndex] + serverIndex));
+        }
+        return sb.toString();
     }
 
-    private HashMap<String, Object> getConfigMap() {
+    private HashMap<String, Object> getConfigMap(final int brokerOffset) {
         final HashMap<String, Object> map = new HashMap<>();
         if (kraftMode) {
-            map.put("node.id", String.valueOf(NODE_ID));
+            map.put("node.id", String.valueOf(BASE_NODE_ID + brokerOffset));
             map.put("process.roles", "broker, controller");
-            map.put("controller.quorum.voters", NODE_ID + "@localhost:" + controllerPort);
+            map.put("controller.quorum.voters", BASE_NODE_ID + "@localhost:" + controllerPort);
             map.put("controller.listener.names", "CONTROLLER");
         } else {
             map.put("zookeeper.connect", "localhost:" + zooKeeperPort);
         }
         map.put("inter.broker.listener.name", "BROKER");
-        map.put("listeners", getListenersString());
+        map.put("listeners", getListenersString(brokerOffset));
         map.put("listener.security.protocol.map", getSecurityProtocolsString());
         map.put("log.dir", logDirectory.toString());
         map.put("offsets.topic.num.partitions", "1");
@@ -376,15 +390,15 @@ public final class K3aEmbedded {
         return map;
     }
 
-    private String getListenersString() {
+    private String getListenersString(final int portOffset) {
         final StringBuilder sb = new StringBuilder();
-        sb.append("BROKER://:" + brokerPort);
+        sb.append("BROKER://:" + (brokerPort + portOffset));
         if (kraftMode) {
-            sb.append(", CONTROLLER://:" + controllerPort);
+            sb.append(", CONTROLLER://:" + (controllerPort + portOffset));
         }
         for (final AdditionalListener additionalListener : additionalListeners) {
             final int port = additionalListener.port <= 0 ? additionalPorts[-additionalListener.port] : additionalListener.port;
-            sb.append(", " + additionalListener.name + "://:" + port);
+            sb.append(", " + additionalListener.name + "://:" + (port + portOffset));
         }
         return sb.toString();
     }

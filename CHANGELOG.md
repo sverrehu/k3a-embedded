@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.9](https://github.com/sverrehu/k3a-embedded/compare/v0.5.8...v0.5.9) (2025-03-05)
+
+
+### Bug Fixes
+
+* negate index when negative ([#151](https://github.com/sverrehu/k3a-embedded/issues/151)) ([38afbd5](https://github.com/sverrehu/k3a-embedded/commit/38afbd55ddd0957555c809a660aa14276618a83f))
+
 ## [0.5.8](https://github.com/sverrehu/k3a-embedded/compare/v0.5.7...v0.5.8) (2024-11-11)
 
 

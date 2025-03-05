@@ -370,7 +370,7 @@ public final class K3aEmbedded {
             sb.append(", CONTROLLER://:" + controllerPort);
         }
         for (final AdditionalListener additionalListener : additionalListeners) {
-            final int port = additionalListener.port <= 0 ? additionalPorts[additionalListener.port] : additionalListener.port;
+            final int port = additionalListener.port <= 0 ? additionalPorts[-additionalListener.port] : additionalListener.port;
             sb.append(", " + additionalListener.name + "://:" + port);
         }
         return sb.toString();

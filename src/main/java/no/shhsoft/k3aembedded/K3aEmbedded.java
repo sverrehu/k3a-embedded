@@ -264,7 +264,7 @@ public final class K3aEmbedded {
         servers = new Server[numBrokers];
         for (int serverIndex = 0; serverIndex < servers.length; serverIndex++) {
             logDirectory = createKafkaLogDirectory();
-            final Map<String, Object> map = getConfigMap();
+            final Map<String, Object> map = getConfigMap(serverIndex);
             final KafkaConfig config = new KafkaConfig(map);
             if (kraftMode) {
                 final String clusterId = Uuid.randomUuid().toString();
@@ -295,6 +295,10 @@ public final class K3aEmbedded {
             zooKeeper.stop();
             zooKeeper = null;
         }
+    }
+
+    public int getNumBrokers() {
+        return numBrokers;
     }
 
     /**

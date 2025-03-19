@@ -36,17 +36,26 @@ public abstract class AbstractK3aEmbeddedTest {
 
     @BeforeAll
     public final void beforeClass() {
+        if (isUnsupportedZooKeeperTest()) {
+            return;
+        }
         kafka = getK3aEmbeddedBuilder().build();
         kafka.start();
     }
 
     @AfterAll
     public final void afterClass() {
+        if (isUnsupportedZooKeeperTest()) {
+            return;
+        }
         kafka.stop();
     }
 
     @Test
     public final void shouldProduceAndConsume() {
+        if (isUnsupportedZooKeeperTest()) {
+            return;
+        }
         try (final Producer<Integer, String> producer = getProducer()) {
             try (final Consumer<Integer, String> consumer = getConsumer()) {
                 consumer.subscribe(Collections.singleton(TOPIC));
@@ -59,6 +68,10 @@ public abstract class AbstractK3aEmbeddedTest {
 
     public final K3aEmbedded getKafka() {
         return kafka;
+    }
+
+    protected boolean isUnsupportedZooKeeperTest() {
+        return !isKraftMode() && !K3aTestUtils.isZooKeeperModeSupported();
     }
 
     private Producer<Integer, String> getProducer() {

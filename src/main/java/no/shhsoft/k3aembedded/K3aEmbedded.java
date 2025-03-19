@@ -2,7 +2,6 @@ package no.shhsoft.k3aembedded;
 
 import kafka.server.KafkaConfig;
 import kafka.server.KafkaRaftServer;
-import kafka.server.KafkaServer;
 import kafka.server.Server;
 import kafka.tools.StorageTool;
 import org.apache.kafka.common.Uuid;
@@ -12,6 +11,7 @@ import scala.Option;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -261,7 +261,17 @@ public final class K3aEmbedded {
             runStorageToolFormat(map, clusterId);
             server = new KafkaRaftServer(config, Time.SYSTEM);
         } else {
-            server = new KafkaServer(config, Time.SYSTEM, Option.empty(), false);
+            try {
+                final Class<?> kafkaServerClass = Class.forName("kafka.server.KafkaServer");
+                final Constructor<?> kafkaServerConstructor = kafkaServerClass.getConstructor(KafkaConfig.class, Time.class, Option.class, boolean.class);
+                server = (Server) kafkaServerConstructor.newInstance(config, Time.SYSTEM, Option.empty(), false);
+            } catch (final ClassNotFoundException e) {
+                throw new RuntimeException("This version of Kafka does not support running without KRaft mode", e);
+            } catch (final NoSuchMethodException e) {
+                throw new RuntimeException("Expected KafkaServer constructor not found", e);
+            } catch (final Exception e) {
+                throw new RuntimeException("Unable to instantiate KafkaServer", e);
+            }
         }
         server.startup();
     }

@@ -1,12 +1,17 @@
 package no.shhsoft.k3aembedded;
 
+import kafka.server.KafkaConfig;
+import kafka.server.Server;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.IntegerDeserializer;
 import org.apache.kafka.common.serialization.IntegerSerializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.apache.kafka.common.utils.Time;
+import scala.Option;
 
+import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -101,6 +106,20 @@ public final class K3aTestUtils {
         final Map<String, Object> map = new HashMap<>();
         map.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         return map;
+    }
+
+    /**
+     * Checks if ZooKeeper is supported in this version of Kafka, i.e. if the Kafka major version is less than 4.
+     *
+     * @return <code>true</code> if ZooKeeper mode is supported, otherwise <code>false</code>.
+     */
+    public static boolean isZooKeeperModeSupported() {
+        try {
+            Class.forName("kafka.server.KafkaServer");
+            return true;
+        } catch (final ClassNotFoundException e) {
+            return false;
+        }
     }
 
 }

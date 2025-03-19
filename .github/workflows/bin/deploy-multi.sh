@@ -6,7 +6,7 @@ then
     exit 1
 fi
 
-KAFKA_VERSIONS="3.9.0 3.8.1 3.8.0 3.7.1 3.7.0 3.6.1 3.6.0 3.5.1"
+KAFKA_VERSIONS="4.0.0 3.9.0 3.8.1 3.8.0 3.7.1 3.7.0 3.6.1 3.6.0 3.5.1"
 CURRENT_VERSION="$(grep '<version>' pom.xml | head -1 | sed -re 's/[[:space:]]*<version>(.*)<\/version>[[:space:]]*/\1/')"
 
 cp pom.xml pom.xml.old

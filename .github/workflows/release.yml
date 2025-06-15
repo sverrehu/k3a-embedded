@@ -21,7 +21,7 @@ jobs:
           distribution: "temurin"
           gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
-          server-id: ossrh
+          server-id: central
           server-username: MAVEN_SONATYPE_USERNAME
           server-password: MAVEN_SONATYPE_PASSPHRASE
           cache: maven

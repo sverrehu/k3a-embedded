@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.11](https://github.com/sverrehu/k3a-embedded/compare/v0.5.10...v0.5.11) (2025-06-15)
+
+
+### Bug Fixes
+
+* change maven deploy method ([#164](https://github.com/sverrehu/k3a-embedded/issues/164)) ([69a64c3](https://github.com/sverrehu/k3a-embedded/commit/69a64c3e446ed28a3db4fc33fd0b99af5e3c0e32))
+
 ## [0.5.10](https://github.com/sverrehu/k3a-embedded/compare/v0.5.9...v0.5.10) (2025-03-19)
 
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.0](https://github.com/sverrehu/k3a-embedded/compare/v0.6.0...v0.7.0) (2025-11-13)
+
+
+### Features
+
+* add support for Kafka 4.1.1 ([#188](https://github.com/sverrehu/k3a-embedded/issues/188)) ([6696681](https://github.com/sverrehu/k3a-embedded/commit/669668100b3c0dc9b5df5d712b38da62ca21f899))
+
 ## [0.6.0](https://github.com/sverrehu/k3a-embedded/compare/v0.5.11...v0.6.0) (2025-09-03)
 
 

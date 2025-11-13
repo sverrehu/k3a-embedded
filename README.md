@@ -34,6 +34,7 @@ match.
 
 The following Kafka versions are supported at the moment:
 
+* 4.1.1
 * 4.1.0
 * 4.0.0
 * 3.9.0

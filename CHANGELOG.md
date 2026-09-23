@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.10.1](https://github.com/sverrehu/k3a-embedded/compare/v0.10.0...v0.10.1) (2026-09-23)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.apache.zookeeper:zookeeper to v3.9.6 ([#227](https://github.com/sverrehu/k3a-embedded/issues/227)) ([e16bda3](https://github.com/sverrehu/k3a-embedded/commit/e16bda361c5322185fc2535e689c8e333fc1a45a))
+
 ## [0.10.0](https://github.com/sverrehu/k3a-embedded/compare/v0.9.0...v0.10.0) (2026-06-24)
 
 

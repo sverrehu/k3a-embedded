@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.11.0](https://github.com/sverrehu/k3a-embedded/compare/v0.10.0...v0.11.0) (2026-10-14)
+
+
+### Features
+
+* add support for Kafka 4.4.0 ([6526c60](https://github.com/sverrehu/k3a-embedded/commit/6526c60c1c2823baa89d8c6f6d80912202b3e404))
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.apache.zookeeper:zookeeper to v3.9.6 ([#227](https://github.com/sverrehu/k3a-embedded/issues/227)) ([e16bda3](https://github.com/sverrehu/k3a-embedded/commit/e16bda361c5322185fc2535e689c8e333fc1a45a))
+
 ## [0.10.0](https://github.com/sverrehu/k3a-embedded/compare/v0.9.0...v0.10.0) (2026-06-24)
 
 
